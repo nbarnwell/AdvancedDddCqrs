@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using ClassLibrary2.Messages;
+using AdvancedDddCqrs.Messages;
 
-namespace ClassLibrary2
+namespace AdvancedDddCqrs
 {
     public class AssMan : IHandler<PriceFood>
     {

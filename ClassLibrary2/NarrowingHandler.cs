@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary2
+﻿namespace AdvancedDddCqrs
 {
     public class NarrowingHandler<TIn, TOut> :IHandler<TIn> 
         where TOut : class, TIn

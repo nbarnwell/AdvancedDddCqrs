@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClassLibrary2.Messages
+namespace AdvancedDddCqrs.Messages
 {
     public class CookFood : OrderMessage
     {

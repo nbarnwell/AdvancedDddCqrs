@@ -52,9 +52,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary2\ClassLibrary2.csproj">
+    <ProjectReference Include="..\ClassLibrary2\AdvancedDddCqrs.csproj">
       <Project>{BE6CC44E-7720-4248-A566-5445D7C21B09}</Project>
-      <Name>ClassLibrary2</Name>
+      <Name>AdvancedDddCqrs</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

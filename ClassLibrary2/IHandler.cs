@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary2
+﻿namespace AdvancedDddCqrs
 {
     public interface IHandler<T>
     {

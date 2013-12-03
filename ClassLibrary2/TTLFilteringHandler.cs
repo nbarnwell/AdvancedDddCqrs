@@ -1,8 +1,8 @@
 ﻿using System;
-using ClassLibrary2.Messages;
+using AdvancedDddCqrs.Messages;
 using Newtonsoft.Json;
 
-namespace ClassLibrary2
+namespace AdvancedDddCqrs
 {
     public class TTLFilteringHandler<T> : IHandler<T>
     {

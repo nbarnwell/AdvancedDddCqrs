@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace ClassLibrary2
+namespace AdvancedDddCqrs
 {
     [TestFixture]
     public class Tests

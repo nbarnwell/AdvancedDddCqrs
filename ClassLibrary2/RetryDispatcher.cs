@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace ClassLibrary2
+namespace AdvancedDddCqrs
 {
     public class RetryDispatcher<T> : IHandler<T>
     {

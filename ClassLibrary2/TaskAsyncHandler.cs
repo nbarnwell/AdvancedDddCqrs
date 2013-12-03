@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace ClassLibrary2
+namespace AdvancedDddCqrs
 {
     public class TaskAsyncHandler : IOrderHandler
     {

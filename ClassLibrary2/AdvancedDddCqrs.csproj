@@ -7,8 +7,8 @@
     <ProjectGuid>{BE6CC44E-7720-4248-A566-5445D7C21B09}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ClassLibrary2</RootNamespace>
-    <AssemblyName>ClassLibrary2</AssemblyName>
+    <RootNamespace>AdvancedDddCqrs</RootNamespace>
+    <AssemblyName>AdvancedDddCqrs</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

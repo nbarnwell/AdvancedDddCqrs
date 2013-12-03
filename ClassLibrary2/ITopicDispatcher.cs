@@ -1,7 +1,7 @@
 ﻿using System;
-using ClassLibrary2.Messages;
+using AdvancedDddCqrs.Messages;
 
-namespace ClassLibrary2
+namespace AdvancedDddCqrs
 {
     public interface ITopicDispatcher
     {

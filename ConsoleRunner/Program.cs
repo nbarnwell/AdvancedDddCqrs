@@ -2,8 +2,8 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
-using ClassLibrary2;
-using ClassLibrary2.Messages;
+using AdvancedDddCqrs;
+using AdvancedDddCqrs.Messages;
 
 namespace ConsoleRunner
 {

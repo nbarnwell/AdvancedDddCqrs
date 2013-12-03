@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClassLibrary2
+namespace AdvancedDddCqrs
 {
     public class WaiterOrderView : IDynamicWrapper
     {

@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
-namespace ClassLibrary2
+namespace AdvancedDddCqrs
 {
     public class ThreadBoundary<T> : IHandler<T>, IDisposable
     {

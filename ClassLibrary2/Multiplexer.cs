@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ClassLibrary2.Messages;
+using AdvancedDddCqrs.Messages;
 
-namespace ClassLibrary2
+namespace AdvancedDddCqrs
 {
     public class Multiplexer<T> : IHandler<T> where T : class, IMessage
     {

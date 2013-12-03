@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace ClassLibrary2
+namespace AdvancedDddCqrs
 {
     public class TestableOrderHandler : IOrderHandler
     {
