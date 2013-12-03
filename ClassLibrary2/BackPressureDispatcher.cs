@@ -4,12 +4,12 @@ using System.Linq;
 
 namespace ClassLibrary2
 {
-    public class BackPressureDispatcher : IOrderHandler
+    public class BackPressureDispatcher<T> : IHandler<T>
     {
-        private readonly IEnumerable<ThreadBoundary> _handlers;
+        private readonly IEnumerable<ThreadBoundary<T>> _handlers;
         private readonly int _maxQueueLength;
 
-        public BackPressureDispatcher(IEnumerable<ThreadBoundary> handlers, int maxQueueLength)
+        public BackPressureDispatcher(IEnumerable<ThreadBoundary<T>> handlers, int maxQueueLength)
         {
             if (handlers == null) throw new ArgumentNullException("handlers");
 
@@ -17,7 +17,7 @@ namespace ClassLibrary2
             _maxQueueLength = maxQueueLength;
         }
 
-        public bool Handle(Order order)
+        public bool Handle(T message)
         {
             var next = GetNextHandler();
 
@@ -27,11 +27,11 @@ namespace ClassLibrary2
                 return false;
             }
 
-            next.Handle(order);
+            next.Handle(message);
             return true;
         }
 
-        private ThreadBoundary GetNextHandler()
+        private ThreadBoundary<T> GetNextHandler()
         {
             return _handlers.Where(x => x.QueueLength < _maxQueueLength)
                             .OrderBy(x => x.QueueLength)

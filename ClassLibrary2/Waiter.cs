@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
 {
@@ -22,7 +23,7 @@ namespace ClassLibrary2
                 order.AddItem(item);
             }
 
-            _dispatcher.Publish("Cook", order);
+            _dispatcher.Publish(typeof(OrderTaken).FullName, new OrderTaken(order));
         }
     }
 }

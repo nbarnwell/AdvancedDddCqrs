@@ -1,13 +1,14 @@
 ﻿using System;
+using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
 {
-    public class TTLSettingHandler : IOrderHandler
+    public class TTLSettingHandler<T> : IHandler<T>
     {
-        private readonly IOrderHandler _handler;
+        private readonly IHandler<T> _handler;
         private readonly int _durationSeconds;
 
-        public TTLSettingHandler(IOrderHandler handler, int durationSeconds)
+        public TTLSettingHandler(IHandler<T> handler, int durationSeconds)
         {
             if (handler == null) throw new ArgumentNullException("handler");
             _handler = handler;
@@ -15,10 +16,15 @@ namespace ClassLibrary2
             _durationSeconds = durationSeconds;
         }
 
-        public bool Handle(Order order)
+        public bool Handle(T message)
         {
-            order.SetExpiry(TimeSpan.FromSeconds(_durationSeconds));
-            _handler.Handle(order);
+            var hasTTL = message as IHaveTTL;
+            if (hasTTL != null)
+            {
+                hasTTL.SetExpiry(TimeSpan.FromSeconds(_durationSeconds));
+            }
+
+            _handler.Handle(message);
             return true;
         }
     }

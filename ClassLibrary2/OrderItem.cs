@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace ClassLibrary2
 {
@@ -8,5 +9,16 @@ namespace ClassLibrary2
         public uint Quantity { get; set; }
         public IList<string> IngredientsUsed { get; set; }
         public double Cost { get; set; }
+
+        public OrderItem Clone()
+        {
+            return new OrderItem
+            {
+                Name            = Name,
+                Quantity        = Quantity,
+                IngredientsUsed = IngredientsUsed.ToList(),
+                Cost            = Cost
+            };
+        }
     }
 }

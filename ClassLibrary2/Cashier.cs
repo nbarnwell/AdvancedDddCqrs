@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
 {
@@ -13,7 +14,6 @@ namespace ClassLibrary2
             if (dispatcher == null) throw new ArgumentNullException("dispatcher");
             _dispatcher = dispatcher;
 
-            _dispatcher.Subscribe(this);
         }
 
         public bool TryPay(Guid orderId)
@@ -23,7 +23,7 @@ namespace ClassLibrary2
             {
                 orderToPay.IsPaid = true;
                 _ordersToBePaid.Remove(orderId);
-                _dispatcher.Publish("Close", orderToPay);
+                _dispatcher.Publish(typeof(Paid).FullName, new Paid(orderToPay));
                 return true;
             }
 
@@ -35,14 +35,5 @@ namespace ClassLibrary2
             _ordersToBePaid.Add(message.Order.Id, message.Order);
             return true;
         }
-    }
-
-    public class Priced : OrderMessage
-    {
-    }
-
-    public class OrderMessage
-    {
-        public Order Order { get; set; }
     }
 }

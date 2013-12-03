@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
 {
-    public class Cook : IOrderHandler
+    public class Cook : IHandler<OrderTaken>
     {
         private readonly IDictionary<string, IList<string>> _recipes = new Dictionary<string, IList<string>>();
         private readonly ITopicDispatcher _dispatcher;
@@ -19,9 +20,11 @@ namespace ClassLibrary2
             _recipes.Add("Beans on Toast", new[] { "Beans", "Toast" });
         }
 
-        public bool Handle(Order order)
+        public bool Handle(OrderTaken message)
         {
             Thread.Sleep(_sleepDuration);
+
+            var order = message.Order;
 
             foreach (var item in order.Items)
             {
@@ -36,7 +39,7 @@ namespace ClassLibrary2
                 }
             }
 
-            _dispatcher.Publish("AssMan", order);
+            _dispatcher.Publish(typeof(Cooked).FullName, message);
 
             return true;
         }

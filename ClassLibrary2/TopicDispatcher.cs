@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
 {
-    public class TopicDispatcher //: ITopicDispatcher
+    public class TopicDispatcher : ITopicDispatcher
     {
         private readonly IDictionary<string, Multiplexer<IMessage>> _subscriptions = new Dictionary<string, Multiplexer<IMessage>>();
 
-        public void Publish<T>(T message)
+        public void Publish<T>(string topic, T message) where T : class, IMessage
         {
-            throw new NotImplementedException();
+            Multiplexer<IMessage> handlers;
+            if (_subscriptions.TryGetValue(topic, out handlers))
+            {
+                handlers.Handle(message);
+            }
         }
 
         public void Subscribe<T>(string topic, IHandler<T> handler) where T : class, IMessage

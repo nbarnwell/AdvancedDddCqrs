@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
 {
@@ -34,13 +35,9 @@ namespace ClassLibrary2
                 }
             }
 
-            _dispatcher.Publish("Cashier", order);
+            _dispatcher.Publish(typeof(Priced).FullName, new Priced(order));
 
             return true;
         }
-    }
-
-    public class Cooked : OrderMessage
-    {
     }
 }

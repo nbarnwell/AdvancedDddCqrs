@@ -3,19 +3,19 @@ using System.Threading;
 
 namespace ClassLibrary2
 {
-    public class RetryDispatcher : IOrderHandler
+    public class RetryDispatcher<T> : IHandler<T>
     {
-        private readonly IOrderHandler _handler;
+        private readonly IHandler<T> _handler;
 
-        public RetryDispatcher(IOrderHandler handler)
+        public RetryDispatcher(IHandler<T> handler)
         {
             if (handler == null) throw new ArgumentNullException("handler");
             _handler = handler;
         }
 
-        public bool Handle(Order order)
+        public bool Handle(T message)
         {
-            while (_handler.Handle(order) == false)
+            while (_handler.Handle(message) == false)
             {
                 Thread.Sleep(1);
             }

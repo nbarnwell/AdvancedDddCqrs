@@ -3,15 +3,8 @@ using System.Collections.Generic;
 
 namespace ClassLibrary2
 {
-   public interface IHaveTTL
-   {
-       bool HasExpired();
-       void SetExpiry(TimeSpan duration);
-   }
-
-    public class Order : IHaveTTL
+    public class Order 
     {
-        private DateTime? _expiry;
         public int TableNumber { get; private set; }
         public IList<OrderItem> Items { get; set; }
 
@@ -27,27 +20,23 @@ namespace ClassLibrary2
             TableNumber = tableNumber;
         }
 
+        public Order Clone()
+        {
+            var order = new Order(TableNumber, Id);
+            order.IsPaid = IsPaid;
+
+            foreach (var orderItem in Items)
+            {
+                order.AddItem(orderItem.Clone());
+            }
+
+            return order;
+        }
+
         public void AddItem(OrderItem item)
         {
             Items.Add(item);
         }
 
-        public bool HasExpired()
-        {
-            Console.WriteLine("Now: {0}, _expiry: {1}", DateTime.UtcNow , _expiry);
-            return DateTime.UtcNow > _expiry;
-        }
-
-        public void SetExpiry(TimeSpan duration)
-        {
-            if (_expiry == null)
-            {
-                _expiry = DateTime.UtcNow.Add(duration);
-            }
-            else
-            {
-                Console.WriteLine("Resetting expiry!");
-            }
-        }
     }
 }

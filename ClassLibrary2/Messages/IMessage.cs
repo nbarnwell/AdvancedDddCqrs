@@ -1,4 +1,4 @@
-﻿namespace ClassLibrary2
+namespace ClassLibrary2.Messages
 {
     public interface IMessage
     {

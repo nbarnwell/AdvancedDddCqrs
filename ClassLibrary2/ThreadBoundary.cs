@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary2
 {
-    public class ThreadBoundary : IOrderHandler, IDisposable
+    public class ThreadBoundary<T> : IHandler<T>, IDisposable
     {
-        private BlockingCollection<Order> _queue = new BlockingCollection<Order>();
+        private BlockingCollection<T> _queue = new BlockingCollection<T>();
 
-        public ThreadBoundary(IOrderHandler handler)
+        public ThreadBoundary(IHandler<T> handler)
         {
             if (handler == null) throw new ArgumentNullException("handler");
 
@@ -18,19 +18,14 @@ namespace ClassLibrary2
                 {
                     handler.Handle(order);
                 }
-
-                //Task.Factory.StartNew(() =>
-                //{
-                //    Parallel.ForEach(_queue.GetConsumingEnumerable(), handler.Handle);
-                //});
             });
         }
 
         public int QueueLength { get { return _queue.Count; } }
 
-        public bool Handle(Order order)
+        public bool Handle(T message)
         {
-            _queue.Add(order);
+            _queue.Add(message);
 
             return true;
         }

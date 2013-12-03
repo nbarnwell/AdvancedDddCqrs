@@ -50,8 +50,15 @@
   <ItemGroup>
     <Compile Include="AssMan.cs" />
     <Compile Include="BackPressureDispatcher.cs" />
-    <Compile Include="IMessage.cs" />
+    <Compile Include="IHandler.cs" />
+    <Compile Include="IHaveTTL.cs" />
     <Compile Include="ITopicDispatcher.cs" />
+    <Compile Include="Messages\Cooked.cs" />
+    <Compile Include="Messages\IMessage.cs" />
+    <Compile Include="Messages\OrderMessage.cs" />
+    <Compile Include="Messages\OrderTaken.cs" />
+    <Compile Include="Messages\Paid.cs" />
+    <Compile Include="Messages\Priced.cs" />
     <Compile Include="NarrowingHandler.cs" />
     <Compile Include="ThreadBoundary.cs" />
     <Compile Include="Cashier.cs" />
