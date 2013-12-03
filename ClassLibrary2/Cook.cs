@@ -5,7 +5,7 @@ using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
 {
-    public class Cook : IHandler<OrderTaken>
+    public class Cook : IHandler<CookFood>
     {
         private readonly IDictionary<string, IList<string>> _recipes = new Dictionary<string, IList<string>>();
         private readonly ITopicDispatcher _dispatcher;
@@ -20,7 +20,7 @@ namespace ClassLibrary2
             _recipes.Add("Beans on Toast", new[] { "Beans", "Toast" });
         }
 
-        public bool Handle(OrderTaken message)
+        public bool Handle(CookFood message)
         {
             Thread.Sleep(_sleepDuration);
 

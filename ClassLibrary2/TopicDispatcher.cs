@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
@@ -39,6 +38,15 @@ namespace ClassLibrary2
             {
                 var handlers = new Multiplexer<IMessage>(new[] { imessageshandler });
                 _subscriptions.Add(topic, handlers);
+            }
+        }
+
+        public void Unsubscribe<T>(string topic, IHandler<T> handler) where T : class, IMessage
+        {
+            Multiplexer<IMessage> multiplexer;
+            if (_subscriptions.TryGetValue(topic, out multiplexer))
+            {
+               multiplexer.RemoveHandler<T>(handler);
             }
         }
     }

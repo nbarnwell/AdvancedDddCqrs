@@ -4,41 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using ClassLibrary2;
 using ClassLibrary2.Messages;
-using Newtonsoft.Json;
 
 namespace ConsoleRunner
 {
-    public class CorrelationPicker : IHandler<OrderTaken>
-    {
-        private readonly ITopicDispatcher _topicDispatcher;
-        private bool finished;
-
-        public CorrelationPicker(ITopicDispatcher topicDispatcher)
-        {
-            if (topicDispatcher == null) throw new ArgumentNullException("topicDispatcher");
-            _topicDispatcher = topicDispatcher;
-        }
-
-        public bool Handle(OrderTaken message)
-        {
-            if (!finished)
-            {
-                _topicDispatcher.Subscribe(message.CorrelationId.ToString(), new Printer());
-            }
-            finished = true;
-            return true;
-        }
-    }
-
-    class Printer : IHandler<IMessage>
-    {
-        public bool Handle(IMessage message)
-        {
-            Console.WriteLine("{0}: {1}", message,JsonConvert.SerializeObject(message, Formatting.Indented));
-            return true;
-        }
-    }
-
     class Program
     {
         static void Main(string[] args)
@@ -50,37 +18,39 @@ namespace ConsoleRunner
         {
             var topicDispatcher = new TopicDispatcher();
 
-            var cwHandler = new TestableOrderHandler();
             var cashierInner = new Cashier(topicDispatcher);
-            var cashier = new ThreadBoundary<Priced>(cashierInner);
-            var assMan = new ThreadBoundary<Cooked>(new AssMan(topicDispatcher));
+            var cashier = new ThreadBoundary<RegisterOrder>(cashierInner);
+            var assMan = new ThreadBoundary<PriceFood>(new AssMan(topicDispatcher));
             var cooks = new[]
             {
-                new ThreadBoundary<OrderTaken>(new Cook(topicDispatcher, 2000)),
-                new ThreadBoundary<OrderTaken>(new Cook(topicDispatcher, 5000)),
-                new ThreadBoundary<OrderTaken>(new Cook(topicDispatcher, 9000))
+                new ThreadBoundary<CookFood>(new Cook(topicDispatcher, 2000)),
+                new ThreadBoundary<CookFood>(new Cook(topicDispatcher, 5000)),
+                new ThreadBoundary<CookFood>(new Cook(topicDispatcher, 9000))
             };
-            var cookDispatcher = new TTLSettingHandler<OrderTaken>(
-                new ThreadBoundary<OrderTaken>(
-                    new RetryDispatcher<OrderTaken>(
-                        new TTLFilteringHandler<OrderTaken>(
-                            new BackPressureDispatcher<OrderTaken>(cooks, 5)))), 1);
+            var cookDispatcher =
+                new TTLSettingHandler<CookFood>(
+                    new ThreadBoundary<CookFood>(
+                        new RetryDispatcher<CookFood>(
+                            new TTLFilteringHandler<CookFood>(
+                                new BackPressureDispatcher<CookFood>(cooks, 5)))), 1);
 
             var waiter = new Waiter(topicDispatcher);
 
-            topicDispatcher.Subscribe(typeof(Priced).FullName, cashier);
-            topicDispatcher.Subscribe(typeof(OrderTaken).FullName, cookDispatcher);
-            topicDispatcher.Subscribe(typeof(Cooked).FullName, assMan);
+            topicDispatcher.Subscribe(typeof(RegisterOrder).FullName, cashier);
+            topicDispatcher.Subscribe(typeof(CookFood).FullName, cookDispatcher);
+            topicDispatcher.Subscribe(typeof(PriceFood).FullName, assMan);
 
             topicDispatcher.Subscribe(typeof(OrderTaken).FullName, new CorrelationPicker(topicDispatcher));
+
+            topicDispatcher.Subscribe(typeof(OrderTaken).FullName, new Coordinator(topicDispatcher));
 
             RunTest(cooks, assMan, cashier, waiter, cashierInner, 5000);
         }
 
         private static void RunTest(
-            ThreadBoundary<OrderTaken>[] cooks,
-            ThreadBoundary<Cooked> assMan,
-            ThreadBoundary<Priced> cashier,
+            ThreadBoundary<CookFood>[] cooks,
+            ThreadBoundary<PriceFood> assMan,
+            ThreadBoundary<RegisterOrder> cashier,
             Waiter waiter,
             Cashier cashierInner,
             int orderCount)

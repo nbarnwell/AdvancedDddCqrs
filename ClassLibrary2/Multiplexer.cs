@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
 {
-    public class Multiplexer<T> : IHandler<T>
+    public class Multiplexer<T> : IHandler<T> where T : class, IMessage
     {
         private readonly IList<IHandler<T>> _handlers = new List<IHandler<T>>();
 
@@ -33,6 +34,17 @@ namespace ClassLibrary2
             }
 
             return true;
+        }
+
+        public void RemoveHandler<TMsg>(IHandler<TMsg> handlerToRemove) where TMsg : class, IMessage
+        {
+            var narrowingHandler = _handlers.OfType<NarrowingHandler<IMessage, TMsg>>()
+                                            .SingleOrDefault(x => x.Handler == handlerToRemove);
+
+            if (narrowingHandler != null)
+            {
+                _handlers.Remove((IHandler<T>)narrowingHandler);
+            }
         }
     }
 }

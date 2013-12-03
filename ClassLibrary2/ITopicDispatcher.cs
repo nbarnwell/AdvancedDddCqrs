@@ -7,5 +7,6 @@ namespace ClassLibrary2
     {
         void Publish<T>(T message) where T : class, IMessage;
         void Subscribe<T>(string topic, IHandler<T> handler) where T : class, IMessage;
+        void Unsubscribe<T>(string topic, IHandler<T> handler) where T : class, IMessage;
     }
 }

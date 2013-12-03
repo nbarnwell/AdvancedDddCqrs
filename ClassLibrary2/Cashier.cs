@@ -4,7 +4,7 @@ using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
 {
-    public class Cashier : IHandler<Priced>
+    public class Cashier : IHandler<RegisterOrder>
     {
         private readonly ITopicDispatcher _dispatcher;
         private readonly Dictionary<Guid, OrderMessage> _ordersToBePaid = new Dictionary<Guid, OrderMessage>();
@@ -31,7 +31,7 @@ namespace ClassLibrary2
             return false;
         }
 
-        public bool Handle(Priced message)
+        public bool Handle(RegisterOrder message)
         {
             _ordersToBePaid.Add(message.Order.Id, message);
             return true;

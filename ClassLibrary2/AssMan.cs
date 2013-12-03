@@ -5,7 +5,7 @@ using ClassLibrary2.Messages;
 
 namespace ClassLibrary2
 {
-    public class AssMan : IHandler<Cooked>
+    public class AssMan : IHandler<PriceFood>
     {
         private readonly ITopicDispatcher _dispatcher;
 
@@ -18,7 +18,7 @@ namespace ClassLibrary2
             _costs.Add("Beans on Toast", 12.99);
         }
 
-        public bool Handle(Cooked message)
+        public bool Handle(PriceFood message)
         {
             var order = message.Order;
 

@@ -3,19 +3,20 @@
     public class NarrowingHandler<TIn, TOut> :IHandler<TIn> 
         where TOut : class, TIn
     {
-        private readonly IHandler<TOut> _handler;
+        public IHandler<TOut> Handler { get; private set; }
 
         public NarrowingHandler(IHandler<TOut> handler)
         {
-            _handler = handler;
+            Handler = handler;
         }
 
         public bool Handle(TIn message)
         {
             var casted = message as TOut;
             if (casted != null)
-                _handler.Handle(casted);
-
+            {
+                Handler.Handle(casted);
+            }
             return true;
         }
     }
