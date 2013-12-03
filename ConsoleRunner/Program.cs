@@ -25,14 +25,14 @@ namespace ConsoleRunner
                 new BlockingCollectionAsyncHandler(new Cook(assMan, 500)),
                 new BlockingCollectionAsyncHandler(new Cook(assMan, 900))
             };
-            var roundRobin = new BlockingCollectionAsyncHandler(new RoundRobinDispatcher(cooks));
+            var dispatcher = new RetryDispatcher(new BackPressureDispatcher(cooks, 5));
 
-            var waiter = new Waiter(roundRobin);
+            var waiter = new Waiter(dispatcher);
 
-            RunTest(cooks, assMan, cashier, waiter, cashierInner);
+            RunTest(cooks, assMan, cashier, waiter, cashierInner, 500000);
         }
 
-        private static void RunTest(BlockingCollectionAsyncHandler[] cooks, BlockingCollectionAsyncHandler assMan, BlockingCollectionAsyncHandler cashier, Waiter waiter, Cashier cashierInner)
+        private static void RunTest(BlockingCollectionAsyncHandler[] cooks, BlockingCollectionAsyncHandler assMan, BlockingCollectionAsyncHandler cashier, Waiter waiter, Cashier cashierInner, int orderCount)
         {
             Task.Factory.StartNew(
                 () =>
@@ -42,15 +42,13 @@ namespace ConsoleRunner
                         Console.WriteLine("Cook 1 Queue Length:    {0}", cooks[0].QueueLength);
                         Console.WriteLine("Cook 2 Queue Length:    {0}", cooks[1].QueueLength);
                         Console.WriteLine("Cook 3 Queue Length:    {0}", cooks[2].QueueLength);
-                        Console.WriteLine("AssMan Queue Length:  {0}", assMan.QueueLength);
-                        Console.WriteLine("Cashier Queue Length: {0}", cashier.QueueLength);
+                        Console.WriteLine("AssMan Queue Length:    {0}", assMan.QueueLength);
+                        Console.WriteLine("Cashier Queue Length:   {0}", cashier.QueueLength);
                         Console.WriteLine("-");
                         Thread.Sleep(500);
                     }
                 },
                 TaskCreationOptions.AttachedToParent);
-
-            const int orderCount = 200;
 
             var orderIds = new BlockingCollection<Guid>();
 

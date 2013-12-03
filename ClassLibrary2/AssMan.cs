@@ -17,8 +17,6 @@ namespace ClassLibrary2
 
         public bool Handle(Order order)
         {
-            Thread.Sleep(1000);
-
             foreach (var item in order.Items)
             {
                 double itemCost;

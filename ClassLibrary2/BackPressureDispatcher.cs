@@ -1,35 +1,35 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace ClassLibrary2
 {
     public class BackPressureDispatcher : IOrderHandler
     {
         private readonly IEnumerable<BlockingCollectionAsyncHandler> _handlers;
-        private int MaxQueueLength = 5;
+        private readonly int _maxQueueLength;
 
-        public BackPressureDispatcher(IEnumerable<BlockingCollectionAsyncHandler> handlers)
+        public BackPressureDispatcher(IEnumerable<BlockingCollectionAsyncHandler> handlers, int maxQueueLength)
         {
+            if (handlers == null) throw new ArgumentNullException("handlers");
+
             _handlers = handlers;
+            _maxQueueLength = maxQueueLength;
         }
 
         public bool Handle(Order order)
         {
-            BlockingCollectionAsyncHandler next;
-            while ((next = GetNextHandler()) == null)
-            {
-                Thread.Sleep(1);
-            }
+            var next = GetNextHandler();
+
+            if (next == null) return false;
 
             next.Handle(order);
-
             return true;
         }
 
         private BlockingCollectionAsyncHandler GetNextHandler()
         {
-            return _handlers.Where(x => x.QueueLength <= MaxQueueLength)
+            return _handlers.Where(x => x.QueueLength < _maxQueueLength)
                             .OrderBy(x => x.QueueLength)
                             .FirstOrDefault();
         }

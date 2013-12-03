@@ -61,6 +61,7 @@
     <Compile Include="OrderItem.cs" />
     <Compile Include="OrderSerialiser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RetryDispatcher.cs" />
     <Compile Include="RoundRobinDispatcher.cs" />
     <Compile Include="TaskAsyncHandler.cs" />
     <Compile Include="TestableOrderHandler.cs" />
