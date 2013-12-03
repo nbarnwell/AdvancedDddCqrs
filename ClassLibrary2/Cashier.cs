@@ -14,9 +14,11 @@ namespace ClassLibrary2
             
         }
 
-        public void Handle(Order order)
+        public bool Handle(Order order)
         {
             _ordersToBePaid.Add(order.Id, order);
+
+            return true;
         }
 
         public bool TryPay(Guid orderId)

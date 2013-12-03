@@ -15,9 +15,9 @@ namespace ClassLibrary2
             _costs.Add("Beans on Toast", 12.99);
         }
 
-        public void Handle(Order order)
+        public bool Handle(Order order)
         {
-            Thread.Sleep(200);
+            Thread.Sleep(1000);
 
             foreach (var item in order.Items)
             {
@@ -32,6 +32,8 @@ namespace ClassLibrary2
                 }
             }
             _orderHandler.Handle(order);
+
+            return true;
         }
     }
 }

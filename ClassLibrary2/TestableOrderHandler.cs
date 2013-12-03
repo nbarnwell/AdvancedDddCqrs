@@ -5,10 +5,12 @@ namespace ClassLibrary2
 {
     public class TestableOrderHandler : IOrderHandler
     {
-        public void Handle(Order order)
+        public bool Handle(Order order)
         {
             this.Order = order;
             //Console.WriteLine(JsonConvert.SerializeObject(order, Formatting.Indented));
+
+            return true;
         }
 
         public Order Order { get; private set; }
