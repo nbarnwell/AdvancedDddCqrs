@@ -6,10 +6,10 @@ namespace ClassLibrary2
 {
     public class BackPressureDispatcher : IOrderHandler
     {
-        private readonly IEnumerable<BlockingCollectionAsyncHandler> _handlers;
+        private readonly IEnumerable<ThreadBoundary> _handlers;
         private readonly int _maxQueueLength;
 
-        public BackPressureDispatcher(IEnumerable<IOrderHandler> handlers, int maxQueueLength)
+        public BackPressureDispatcher(IEnumerable<ThreadBoundary> handlers, int maxQueueLength)
         {
             if (handlers == null) throw new ArgumentNullException("handlers");
 
@@ -21,13 +21,17 @@ namespace ClassLibrary2
         {
             var next = GetNextHandler();
 
-            if (next == null) return false;
+            if (next == null)
+            {
+              //  Console.WriteLine(string.Format("Pushing back order {0}", order.Id));
+                return false;
+            }
 
             next.Handle(order);
             return true;
         }
 
-        private BlockingCollectionAsyncHandler GetNextHandler()
+        private ThreadBoundary GetNextHandler()
         {
             return _handlers.Where(x => x.QueueLength < _maxQueueLength)
                             .OrderBy(x => x.QueueLength)

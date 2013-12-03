@@ -97,7 +97,7 @@ namespace ClassLibrary2
         {
             var testableOrderHandler = new TestableOrderHandler();
             var cashier = new Cashier(testableOrderHandler);
-            var waiter = new Waiter(new BlockingCollectionAsyncHandler(new Cook(new AssMan(cashier), 1000)));
+            var waiter = new Waiter(new ThreadBoundary(new Cook(new AssMan(cashier), 1000)));
             var orderId = Guid.NewGuid();
 
             waiter.TakeOrder(
@@ -128,9 +128,9 @@ namespace ClassLibrary2
         {
             var cwHandler = new TestableOrderHandler();
             var cashierInner = new Cashier(cwHandler);
-            var cashier = new BlockingCollectionAsyncHandler(cashierInner);
-            var assMan = new BlockingCollectionAsyncHandler(new AssMan(cashier));
-            var cook = new BlockingCollectionAsyncHandler(new Cook(assMan, 1000));
+            var cashier = new ThreadBoundary(cashierInner);
+            var assMan = new ThreadBoundary(new AssMan(cashier));
+            var cook = new ThreadBoundary(new Cook(assMan, 1000));
             var waiter = new Waiter(cook);
 
             var writer = Task.Factory.StartNew(() =>
@@ -196,15 +196,15 @@ namespace ClassLibrary2
         {
             var cwHandler = new TestableOrderHandler();
             var cashierInner = new Cashier(cwHandler);
-            var cashier = new BlockingCollectionAsyncHandler(cashierInner);
-            var assMan = new BlockingCollectionAsyncHandler(new AssMan(cashier));
-            var cooks = new BlockingCollectionAsyncHandler[]
+            var cashier = new ThreadBoundary(cashierInner);
+            var assMan = new ThreadBoundary(new AssMan(cashier));
+            var cooks = new ThreadBoundary[]
             {
-                new BlockingCollectionAsyncHandler(new Cook(assMan, 200)),
-                new BlockingCollectionAsyncHandler(new Cook(assMan, 500)),
-                new BlockingCollectionAsyncHandler(new Cook(assMan, 900))
+                new ThreadBoundary(new Cook(assMan, 200)),
+                new ThreadBoundary(new Cook(assMan, 500)),
+                new ThreadBoundary(new Cook(assMan, 900))
             };
-            var roundRobin = new BlockingCollectionAsyncHandler(new RoundRobinDispatcher(cooks));
+            var roundRobin = new ThreadBoundary(new RoundRobinDispatcher(cooks));
 
             var waiter = new Waiter(roundRobin);
 

@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="AssMan.cs" />
     <Compile Include="BackPressureDispatcher.cs" />
-    <Compile Include="BlockingCollectionAsyncHandler.cs" />
+    <Compile Include="ThreadBoundary.cs" />
     <Compile Include="Cashier.cs" />
     <Compile Include="Cook.cs" />
     <Compile Include="IDynamicWrapper.cs" />

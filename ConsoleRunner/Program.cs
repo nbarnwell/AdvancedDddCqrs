@@ -17,22 +17,26 @@ namespace ConsoleRunner
         {
             var cwHandler    = new TestableOrderHandler();
             var cashierInner = new Cashier(cwHandler);
-            var cashier      = new BlockingCollectionAsyncHandler(cashierInner);
-            var assMan       = new BlockingCollectionAsyncHandler(new AssMan(cashier));
+            var cashier      = new ThreadBoundary(cashierInner);
+            var assMan       = new ThreadBoundary(new AssMan(cashier));
             var cooks        = new[]
             {
-                new TTLFilteringHandler( new BlockingCollectionAsyncHandler(new Cook(assMan, 200))),
-                new TTLFilteringHandler( new BlockingCollectionAsyncHandler(new Cook(assMan, 500))),
-                new TTLFilteringHandler( new BlockingCollectionAsyncHandler(new Cook(assMan, 900)))
+                new ThreadBoundary(new Cook(assMan, 2000)),
+                new ThreadBoundary(new Cook(assMan, 5000)),
+                new ThreadBoundary(new Cook(assMan, 9000))
             };
-            var dispatcher = new TTLSettingHandler(new RetryDispatcher(new BackPressureDispatcher(cooks, 5), 10);
+            var dispatcher = new TTLSettingHandler(
+                new ThreadBoundary(
+                    new RetryDispatcher(
+                        new TTLFilteringHandler(
+                            new BackPressureDispatcher(cooks, 5)))), 1);
 
             var waiter = new Waiter(dispatcher);
 
-            RunTest(cooks, assMan, cashier, waiter, cashierInner, 500000);
+            RunTest(cooks, assMan, cashier, waiter, cashierInner, 5000);
         }
 
-        private static void RunTest(BlockingCollectionAsyncHandler[] cooks, BlockingCollectionAsyncHandler assMan, BlockingCollectionAsyncHandler cashier, Waiter waiter, Cashier cashierInner, int orderCount)
+        private static void RunTest(ThreadBoundary[] cooks, ThreadBoundary assMan, ThreadBoundary cashier, Waiter waiter, Cashier cashierInner, int orderCount)
         {
             Task.Factory.StartNew(
                 () =>
@@ -93,6 +97,7 @@ namespace ConsoleRunner
                 });
 
             waitHandle.WaitOne();
+            Console.ReadKey();
         }
     }
 }

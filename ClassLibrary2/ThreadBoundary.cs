@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 namespace ClassLibrary2
 {
-    public class BlockingCollectionAsyncHandler : IOrderHandler, IDisposable
+    public class ThreadBoundary : IOrderHandler, IDisposable
     {
         private BlockingCollection<Order> _queue = new BlockingCollection<Order>();
 
-        public BlockingCollectionAsyncHandler(IOrderHandler handler)
+        public ThreadBoundary(IOrderHandler handler)
         {
             if (handler == null) throw new ArgumentNullException("handler");
 

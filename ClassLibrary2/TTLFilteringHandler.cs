@@ -19,7 +19,7 @@ namespace ClassLibrary2
             {
                 return _handler.Handle(order);
             }
-            Console.WriteLine("Dropped order: {0}", order.TableNumber);
+            Console.WriteLine("****************** Dropped order: {0}", order.TableNumber);
             return true;
         }
     }

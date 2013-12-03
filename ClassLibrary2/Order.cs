@@ -11,7 +11,7 @@ namespace ClassLibrary2
 
     public class Order : IHaveTTL
     {
-        private DateTime _expiry;
+        private DateTime? _expiry;
         public int TableNumber { get; private set; }
         public IList<OrderItem> Items { get; set; }
 
@@ -34,12 +34,20 @@ namespace ClassLibrary2
 
         public bool HasExpired()
         {
+            Console.WriteLine("Now: {0}, _expiry: {1}", DateTime.UtcNow , _expiry);
             return DateTime.UtcNow > _expiry;
         }
 
         public void SetExpiry(TimeSpan duration)
         {
-            _expiry = DateTime.UtcNow.Add(duration);
+            if (_expiry == null)
+            {
+                _expiry = DateTime.UtcNow.Add(duration);
+            }
+            else
+            {
+                Console.WriteLine("Resetting expiry!");
+            }
         }
     }
 }
