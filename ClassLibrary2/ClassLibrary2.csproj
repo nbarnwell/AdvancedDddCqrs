@@ -50,6 +50,9 @@
   <ItemGroup>
     <Compile Include="AssMan.cs" />
     <Compile Include="BackPressureDispatcher.cs" />
+    <Compile Include="IMessage.cs" />
+    <Compile Include="ITopicDispatcher.cs" />
+    <Compile Include="NarrowingHandler.cs" />
     <Compile Include="ThreadBoundary.cs" />
     <Compile Include="Cashier.cs" />
     <Compile Include="Cook.cs" />
@@ -66,6 +69,7 @@
     <Compile Include="TaskAsyncHandler.cs" />
     <Compile Include="TestableOrderHandler.cs" />
     <Compile Include="Tests.cs" />
+    <Compile Include="TopicDispatcher.cs" />
     <Compile Include="TTLFilteringHandler.cs" />
     <Compile Include="TTLSettingHandler.cs" />
     <Compile Include="Waiter.cs" />

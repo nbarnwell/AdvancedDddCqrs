@@ -1,22 +1,34 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ClassLibrary2
 {
-    public class Multiplexer : IOrderHandler
+    public class Multiplexer<T> : IHandler<T>
     {
-        private readonly IOrderHandler[] _handlers;
+        private readonly IList<IHandler<T>> _handlers = new List<IHandler<T>>();
 
-        public Multiplexer(params IOrderHandler[] handlers)
+        public Multiplexer(IEnumerable<IHandler<T>> handlers)
         {
-            if (handlers == null) throw new ArgumentNullException("handlers");
-            _handlers = handlers;
+            _handlers = handlers.ToList();
         }
 
-        public bool Handle(Order order)
+        public void AddHandler(IHandler<T> newHandler)
+        {
+            _handlers.Add(newHandler);
+        }
+
+        public Multiplexer<T> Clone()
+        {
+            var clone = new Multiplexer<T>(_handlers);
+            return clone;
+        }
+
+        public bool Handle(T message)
         {
             foreach (var handler in _handlers)
             {
-                handler.Handle(order);
+                handler.Handle(message);
             }
 
             return true;

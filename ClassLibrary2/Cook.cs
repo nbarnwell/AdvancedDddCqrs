@@ -6,15 +6,16 @@ namespace ClassLibrary2
 {
     public class Cook : IOrderHandler
     {
-        private readonly IOrderHandler _orderHandler;
         private readonly IDictionary<string, IList<string>> _recipes = new Dictionary<string, IList<string>>();
+        private readonly ITopicDispatcher _dispatcher;
         private readonly int _sleepDuration;
 
-        public Cook(IOrderHandler orderHandler, int sleepDuration)
+        public Cook(ITopicDispatcher dispatcher, int sleepDuration)
         {
-            if (orderHandler == null) throw new ArgumentNullException("orderHandler");
-            _orderHandler = orderHandler;
+            if (dispatcher == null) throw new ArgumentNullException("dispatcher");
+            _dispatcher = dispatcher;
             _sleepDuration = sleepDuration;
+
             _recipes.Add("Beans on Toast", new[] { "Beans", "Toast" });
         }
 
@@ -35,7 +36,7 @@ namespace ClassLibrary2
                 }
             }
 
-            _orderHandler.Handle(order);
+            _dispatcher.Publish("AssMan", order);
 
             return true;
         }

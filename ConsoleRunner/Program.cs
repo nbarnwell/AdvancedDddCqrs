@@ -15,15 +15,17 @@ namespace ConsoleRunner
 
         private static void BackPressureTest()
         {
+            var topicDispatcher = new TopicDispatcher();
+
             var cwHandler    = new TestableOrderHandler();
-            var cashierInner = new Cashier(cwHandler);
+            var cashierInner = new Cashier(topicDispatcher);
             var cashier      = new ThreadBoundary(cashierInner);
-            var assMan       = new ThreadBoundary(new AssMan(cashier));
+            var assMan = new ThreadBoundary(new AssMan(topicDispatcher));
             var cooks        = new[]
             {
-                new ThreadBoundary(new Cook(assMan, 2000)),
-                new ThreadBoundary(new Cook(assMan, 5000)),
-                new ThreadBoundary(new Cook(assMan, 9000))
+                new ThreadBoundary(new Cook(topicDispatcher, 2000)),
+                new ThreadBoundary(new Cook(topicDispatcher, 5000)),
+                new ThreadBoundary(new Cook(topicDispatcher, 9000))
             };
             var dispatcher = new TTLSettingHandler(
                 new ThreadBoundary(
@@ -31,7 +33,7 @@ namespace ConsoleRunner
                         new TTLFilteringHandler(
                             new BackPressureDispatcher(cooks, 5)))), 1);
 
-            var waiter = new Waiter(dispatcher);
+            var waiter = new Waiter(topicDispatcher);
 
             RunTest(cooks, assMan, cashier, waiter, cashierInner, 5000);
         }

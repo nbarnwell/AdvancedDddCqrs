@@ -3,22 +3,17 @@ using System.Collections.Generic;
 
 namespace ClassLibrary2
 {
-    public class Cashier : IOrderHandler
+    public class Cashier : IHandler<Priced>
     {
-        private readonly IOrderHandler _orderHandler;
+        private readonly ITopicDispatcher _dispatcher;
         private readonly Dictionary<Guid, Order> _ordersToBePaid = new Dictionary<Guid, Order>();
         
-        public Cashier(IOrderHandler orderHandler)
+        public Cashier(ITopicDispatcher dispatcher)
         {
-            _orderHandler = orderHandler;
-            
-        }
+            if (dispatcher == null) throw new ArgumentNullException("dispatcher");
+            _dispatcher = dispatcher;
 
-        public bool Handle(Order order)
-        {
-            _ordersToBePaid.Add(order.Id, order);
-
-            return true;
+            _dispatcher.Subscribe(this);
         }
 
         public bool TryPay(Guid orderId)
@@ -28,11 +23,26 @@ namespace ClassLibrary2
             {
                 orderToPay.IsPaid = true;
                 _ordersToBePaid.Remove(orderId);
-                _orderHandler.Handle(orderToPay);
+                _dispatcher.Publish("Close", orderToPay);
                 return true;
             }
 
             return false;
         }
+
+        public bool Handle(Priced message)
+        {
+            _ordersToBePaid.Add(message.Order.Id, message.Order);
+            return true;
+        }
+    }
+
+    public class Priced : OrderMessage
+    {
+    }
+
+    public class OrderMessage
+    {
+        public Order Order { get; set; }
     }
 }

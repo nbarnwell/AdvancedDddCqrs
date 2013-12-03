@@ -4,19 +4,23 @@ using System.Threading;
 
 namespace ClassLibrary2
 {
-    public class AssMan : IOrderHandler
+    public class AssMan : IHandler<Cooked>
     {
-        private readonly IOrderHandler _orderHandler;
-        private IDictionary<string, double> _costs = new Dictionary<string, double>();
+        private readonly ITopicDispatcher _dispatcher;
 
-        public AssMan(IOrderHandler orderHandler)
+        private readonly IDictionary<string, double> _costs = new Dictionary<string, double>();
+
+        public AssMan(ITopicDispatcher dispatcher)
         {
-            _orderHandler = orderHandler;
+            if (dispatcher == null) throw new ArgumentNullException("dispatcher");
+            _dispatcher = dispatcher;
             _costs.Add("Beans on Toast", 12.99);
         }
 
-        public bool Handle(Order order)
+        public bool Handle(Cooked message)
         {
+            var order = message.Order;
+
             foreach (var item in order.Items)
             {
                 double itemCost;
@@ -29,9 +33,14 @@ namespace ClassLibrary2
                     throw new InvalidOperationException(string.Format("No price found for item {0}", item.Name));
                 }
             }
-            _orderHandler.Handle(order);
+
+            _dispatcher.Publish("Cashier", order);
 
             return true;
         }
+    }
+
+    public class Cooked : OrderMessage
+    {
     }
 }

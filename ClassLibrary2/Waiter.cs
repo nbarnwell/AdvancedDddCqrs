@@ -5,12 +5,12 @@ namespace ClassLibrary2
 {
     public class Waiter
     {
-        private readonly IOrderHandler _orderHandler;
+        private readonly ITopicDispatcher _dispatcher;
 
-        public Waiter(IOrderHandler orderHandler)
+        public Waiter(ITopicDispatcher dispatcher)
         {
-            if (orderHandler == null) throw new ArgumentNullException("orderHandler");
-            _orderHandler = orderHandler;
+            if (dispatcher == null) throw new ArgumentNullException("dispatcher");
+            _dispatcher = dispatcher;
         }
 
         public void TakeOrder(int tableNumber, IEnumerable<OrderItem> orderItems, Guid id)
@@ -22,7 +22,7 @@ namespace ClassLibrary2
                 order.AddItem(item);
             }
 
-            _orderHandler.Handle(order);
+            _dispatcher.Publish("Cook", order);
         }
     }
 }
