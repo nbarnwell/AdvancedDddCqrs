@@ -3,7 +3,6 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using AdvancedDddCqrs;
-using AdvancedDddCqrs.Messages;
 
 namespace ConsoleRunner
 {
@@ -17,60 +16,44 @@ namespace ConsoleRunner
         private static void BackPressureTest()
         {
             var topicDispatcher = new TopicDispatcher();
+            var tbm = new ThreadBoundaryMonitor();
 
             var cashierInner = new Cashier(topicDispatcher);
-            var cashier = new ThreadBoundary<RegisterOrder>(cashierInner);
-            var assMan = new ThreadBoundary<PriceFood>(new AssMan(topicDispatcher));
-            var cooks = new[]
+            var cashier      = tbm.Wrap(cashierInner);
+            var assMan       = tbm.Wrap(new AssMan(topicDispatcher));
+            var cooks        = new[]
             {
-                new ThreadBoundary<CookFood>(new Cook(topicDispatcher, 2000)),
-                new ThreadBoundary<CookFood>(new Cook(topicDispatcher, 5000)),
-                new ThreadBoundary<CookFood>(new Cook(topicDispatcher, 9000))
+                tbm.Wrap(new Cook(topicDispatcher, 2000)),
+                tbm.Wrap(new Cook(topicDispatcher, 5000)),
+                tbm.Wrap(new Cook(topicDispatcher, 9000))
             };
             var cookDispatcher =
-                new TTLSettingHandler<CookFood>(
-                    new ThreadBoundary<CookFood>(
-                        new RetryDispatcher<CookFood>(
-                            new TTLFilteringHandler<CookFood>(
-                                new BackPressureDispatcher<CookFood>(cooks, 5)))), 1);
+                TTLSettingHandler.Wrap(
+                    tbm.Wrap(
+                        RetryDispatcher.Wrap(
+                            TTLFilteringHandler.Wrap(
+                                SmartDispatcher.Wrap(cooks, maxQueueLength: 5))
+                            )
+                        ),
+                    1);
 
             var waiter = new Waiter(topicDispatcher);
 
-            topicDispatcher.Subscribe(typeof(RegisterOrder).FullName, cashier);
-            topicDispatcher.Subscribe(typeof(CookFood).FullName, cookDispatcher);
-            topicDispatcher.Subscribe(typeof(PriceFood).FullName, assMan);
+            topicDispatcher.Subscribe(cashier);
+            topicDispatcher.Subscribe(cookDispatcher);
+            topicDispatcher.Subscribe(assMan);
 
-            topicDispatcher.Subscribe(typeof(OrderTaken).FullName, new CorrelationPicker(topicDispatcher));
+            //topicDispatcher.Subscribe(new SelfUnsubscribingCorrelationPicker(topicDispatcher));
+            topicDispatcher.Subscribe(new OrderSampler(topicDispatcher));
 
-            topicDispatcher.Subscribe(typeof(OrderTaken).FullName, new Coordinator(topicDispatcher));
+            topicDispatcher.Subscribe(tbm.Wrap(new OrderFulfillmentCoordinator(topicDispatcher)));
 
-            RunTest(cooks, assMan, cashier, waiter, cashierInner, 5000);
+            RunTest(waiter, cashierInner, orderCount: 1);
         }
 
-        private static void RunTest(
-            ThreadBoundary<CookFood>[] cooks,
-            ThreadBoundary<PriceFood> assMan,
-            ThreadBoundary<RegisterOrder> cashier,
-            Waiter waiter,
-            Cashier cashierInner,
-            int orderCount)
-        {
-            //Task.Factory.StartNew(
-            //    () =>
-            //    {
-            //        while (true)
-            //        {
-            //            Console.WriteLine("Cook 1 Queue Length:    {0}", cooks[0].QueueLength);
-            //            Console.WriteLine("Cook 2 Queue Length:    {0}", cooks[1].QueueLength);
-            //            Console.WriteLine("Cook 3 Queue Length:    {0}", cooks[2].QueueLength);
-            //            Console.WriteLine("AssMan Queue Length:    {0}", assMan.QueueLength);
-            //            Console.WriteLine("Cashier Queue Length:   {0}", cashier.QueueLength);
-            //            Console.WriteLine("-");
-            //            Thread.Sleep(500);
-            //        }
-            //    },
-            //    TaskCreationOptions.AttachedToParent);
 
+        private static void RunTest(Waiter waiter, Cashier cashier, int orderCount)
+        {
             var orderIds = new BlockingCollection<Guid>();
             var ordersToBePaid = new BlockingCollection<Guid>();
 
@@ -109,7 +92,7 @@ namespace ConsoleRunner
                 {
                     foreach (var orderId in ordersToBePaid.GetConsumingEnumerable())
                     {
-                        while (cashierInner.TryPay(orderId) == false)
+                        while (cashier.TryPay(orderId) == false)
                         {
                             Thread.Sleep(1);
                         }

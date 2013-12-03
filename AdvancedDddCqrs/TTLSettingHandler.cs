@@ -3,6 +3,14 @@ using AdvancedDddCqrs.Messages;
 
 namespace AdvancedDddCqrs
 {
+    public static class TTLSettingHandler
+    {
+        public static TTLSettingHandler<T> Wrap<T>(IHandler<T> handler, int durationSeconds)
+        {
+            return new TTLSettingHandler<T>(handler, durationSeconds);
+        }
+    }
+
     public class TTLSettingHandler<T> : IHandler<T>
     {
         private readonly IHandler<T> _handler;
@@ -26,6 +34,11 @@ namespace AdvancedDddCqrs
 
             _handler.Handle(message);
             return true;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("TTLSettingHandler({0})", _handler);
         }
     }
 }

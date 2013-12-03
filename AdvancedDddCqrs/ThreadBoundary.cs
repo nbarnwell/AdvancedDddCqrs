@@ -6,10 +6,12 @@ namespace AdvancedDddCqrs
 {
     public class ThreadBoundary<T> : IHandler<T>, IDisposable
     {
+        private readonly IHandler<T> _handler;
         private BlockingCollection<T> _queue = new BlockingCollection<T>();
 
         public ThreadBoundary(IHandler<T> handler)
         {
+            _handler = handler;
             if (handler == null) throw new ArgumentNullException("handler");
 
             Task.Factory.StartNew(() =>
@@ -28,6 +30,11 @@ namespace AdvancedDddCqrs
             _queue.Add(message);
 
             return true;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("ThreadBoundary({0})", _handler);
         }
 
         public void Dispose()

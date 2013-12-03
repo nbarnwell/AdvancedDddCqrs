@@ -4,6 +4,14 @@ using Newtonsoft.Json;
 
 namespace AdvancedDddCqrs
 {
+    public static class TTLFilteringHandler
+    {
+        public static TTLFilteringHandler<T> Wrap<T>(IHandler<T> handler)
+        {
+            return new TTLFilteringHandler<T>(handler);
+        }
+    }
+
     public class TTLFilteringHandler<T> : IHandler<T>
     {
         private readonly IHandler<T> _handler;
@@ -18,16 +26,17 @@ namespace AdvancedDddCqrs
         public bool Handle(T message)
         {
             var hasTTL = message as IHaveTTL;
-            if (hasTTL != null)
+            if (hasTTL == null || hasTTL.HasExpired() == false)
             {
-                if (!hasTTL.HasExpired())
-                {
-                    return _handler.Handle(message);
-                }
-
+                return _handler.Handle(message);
             }
-            //Console.WriteLine("****************** Dropped message: {0}", JsonConvert.SerializeObject(message, Formatting.Indented));
+
             return true;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("TTLFilteringHandler({0})", _handler);
         }
     }
 }

@@ -13,7 +13,6 @@ namespace AdvancedDddCqrs.Messages
 
         public bool HasExpired()
         {
-            //Console.WriteLine("Now: {0}, _expiry: {1}", DateTime.UtcNow, _expiry);
             return DateTime.UtcNow > _expiry;
         }
 
@@ -22,10 +21,6 @@ namespace AdvancedDddCqrs.Messages
             if (_expiry == null)
             {
                 _expiry = DateTime.UtcNow.Add(duration);
-            }
-            else
-            {
-                //Console.WriteLine("Resetting expiry!");
             }
         }
 

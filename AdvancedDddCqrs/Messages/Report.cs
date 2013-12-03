@@ -1,7 +1,6 @@
 ﻿using System;
-using AdvancedDddCqrs.Messages;
 
-namespace AdvancedDddCqrs
+namespace AdvancedDddCqrs.Messages
 {
     public class Report : OrderMessage
     {

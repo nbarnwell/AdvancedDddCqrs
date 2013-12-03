@@ -4,12 +4,12 @@ using AdvancedDddCqrs.Messages;
 
 namespace AdvancedDddCqrs
 {
-    public class Coordinator : IHandler<OrderTaken>
+    public class OrderFulfillmentCoordinator : IHandler<OrderTaken>
     {
         private readonly Dictionary<Guid, OrderFulfillment> _processes = new Dictionary<Guid, OrderFulfillment>();
         private readonly ITopicDispatcher _dispatcher;
 
-        public Coordinator(ITopicDispatcher dispatcher)
+        public OrderFulfillmentCoordinator(ITopicDispatcher dispatcher)
         {
             _dispatcher = dispatcher;
         }

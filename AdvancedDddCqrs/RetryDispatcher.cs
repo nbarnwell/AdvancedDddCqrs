@@ -3,6 +3,14 @@ using System.Threading;
 
 namespace AdvancedDddCqrs
 {
+    public static class RetryDispatcher
+    {
+        public static RetryDispatcher<T> Wrap<T>(IHandler<T> handler)
+        {
+            return new RetryDispatcher<T>(handler);
+        }
+    }
+
     public class RetryDispatcher<T> : IHandler<T>
     {
         private readonly IHandler<T> _handler;
@@ -21,6 +29,11 @@ namespace AdvancedDddCqrs
             }
 
             return true;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("RetryDispatcher({0})", _handler);
         }
     }
 }

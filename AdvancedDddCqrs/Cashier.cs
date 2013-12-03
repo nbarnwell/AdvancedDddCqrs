@@ -4,7 +4,7 @@ using AdvancedDddCqrs.Messages;
 
 namespace AdvancedDddCqrs
 {
-    public class Cashier : IHandler<RegisterOrder>
+    public class Cashier : IHandler<QueueOrderForPayment>
     {
         private readonly ITopicDispatcher _dispatcher;
         private readonly Dictionary<Guid, OrderMessage> _ordersToBePaid = new Dictionary<Guid, OrderMessage>();
@@ -13,7 +13,6 @@ namespace AdvancedDddCqrs
         {
             if (dispatcher == null) throw new ArgumentNullException("dispatcher");
             _dispatcher = dispatcher;
-
         }
 
         public bool TryPay(Guid orderId)
@@ -31,7 +30,7 @@ namespace AdvancedDddCqrs
             return false;
         }
 
-        public bool Handle(RegisterOrder message)
+        public bool Handle(QueueOrderForPayment message)
         {
             _ordersToBePaid.Add(message.Order.Id, message);
             return true;

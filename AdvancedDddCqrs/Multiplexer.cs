@@ -29,7 +29,7 @@ namespace AdvancedDddCqrs
         {
             foreach (var handler in _handlers)
             {
-                //var newMessage = (T)message.clone();
+                ////Console.WriteLine("Multiplexing {0} to {1}", message, handler);
                 handler.Handle(message);
             }
 
@@ -45,6 +45,16 @@ namespace AdvancedDddCqrs
             {
                 _handlers.Remove((IHandler<T>)narrowingHandler);
             }
+        }
+
+        public override string ToString()
+        {
+            var firstHandler = _handlers.FirstOrDefault();
+            return string.Format(
+                "Multiplexer({0})",
+                firstHandler != null
+                    ? firstHandler.ToString()
+                    : string.Format("IHandler<{0}>", typeof(T)));
         }
     }
 }

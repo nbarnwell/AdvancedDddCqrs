@@ -8,7 +8,7 @@ namespace AdvancedDddCqrs
         public bool Handle(Order order)
         {
             this.Order = order;
-            //Console.WriteLine(JsonConvert.SerializeObject(order, Formatting.Indented));
+            ////Console.WriteLine(JsonConvert.SerializeObject(order, Formatting.Indented));
 
             return true;
         }

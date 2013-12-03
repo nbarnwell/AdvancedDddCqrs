@@ -3,11 +3,12 @@ using AdvancedDddCqrs.Messages;
 
 namespace AdvancedDddCqrs
 {
-    public class CorrelationPicker : IHandler<OrderTaken>
+    public class OrderSampler : IHandler<OrderTaken>
     {
         private readonly ITopicDispatcher _topicDispatcher;
         private bool _finished = false;
-        public CorrelationPicker(ITopicDispatcher topicDispatcher)
+
+        public OrderSampler(ITopicDispatcher topicDispatcher)
         {
             if (topicDispatcher == null) throw new ArgumentNullException("topicDispatcher");
             _topicDispatcher = topicDispatcher;
@@ -21,7 +22,6 @@ namespace AdvancedDddCqrs
             }
 
             _topicDispatcher.Subscribe(message.CorrelationId.ToString(), new Printer());
-            _topicDispatcher.Unsubscribe(message.CorrelationId.ToString(), this);
             _finished = true;
             return true;
         }

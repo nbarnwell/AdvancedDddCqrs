@@ -47,12 +47,13 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThreadBoundaryMonitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClassLibrary2\AdvancedDddCqrs.csproj">
+    <ProjectReference Include="..\AdvancedDddCqrs\AdvancedDddCqrs.csproj">
       <Project>{BE6CC44E-7720-4248-A566-5445D7C21B09}</Project>
       <Name>AdvancedDddCqrs</Name>
     </ProjectReference>

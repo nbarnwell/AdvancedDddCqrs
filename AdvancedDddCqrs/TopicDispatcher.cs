@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AdvancedDddCqrs.Messages;
 
 namespace AdvancedDddCqrs
@@ -9,18 +10,22 @@ namespace AdvancedDddCqrs
 
         public void Publish<T>(T message) where T : class, IMessage
         {
-            var typeName = message.GetType().FullName;
-
-            var topics = new List<string> { typeName, message.CorrelationId.ToString() };
+            var topics = GetDefaultTopics(message);
 
             foreach (var topic in topics)
             {
                 Multiplexer<IMessage> handlers;
                 if (_subscriptions.TryGetValue(topic, out handlers))
                 {
+                    ////Console.WriteLine("Dispatching {0}:{1} to handlers for topic {2}", message, message.CorrelationId, topic);
                     handlers.Handle(message);
                 }
             }
+        }
+
+        public void Subscribe<T>(IHandler<T> handler) where T : class, IMessage
+        {
+            Subscribe(TopicFromTypeName(typeof(T)), handler);
         }
 
         public void Subscribe<T>(string topic, IHandler<T> handler) where T : class, IMessage
@@ -46,8 +51,29 @@ namespace AdvancedDddCqrs
             Multiplexer<IMessage> multiplexer;
             if (_subscriptions.TryGetValue(topic, out multiplexer))
             {
-               multiplexer.RemoveHandler<T>(handler);
+                multiplexer.RemoveHandler<T>(handler);
             }
+        }
+
+        private static string TopicFromTypeName(Type messageType)
+        {
+            return messageType.FullName;
+        }
+
+        private static string TopicFromCorrelationId<T>(T message) where T : class, IMessage
+        {
+            return message.CorrelationId.ToString();
+        }
+
+        private static IEnumerable<string> GetDefaultTopics<T>(T message) where T : class, IMessage
+        {
+            var topics = new List<string>
+            {
+                TopicFromTypeName(message.GetType()),
+                TopicFromCorrelationId(message)
+            };
+
+            return topics;
         }
     }
 }

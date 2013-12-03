@@ -12,6 +12,7 @@ namespace AdvancedDddCqrs
         public OrderFulfillment(ITopicDispatcher dispatcher, OrderTaken initiatingMessage)
         {
             _dispatcher = dispatcher;
+
             _dispatcher.Publish(new CookFood(initiatingMessage.Order, 
                                              initiatingMessage.CorrelationId,
                                              initiatingMessage.MessageId));
@@ -27,7 +28,7 @@ namespace AdvancedDddCqrs
 
         public bool Handle(Priced message)
         {
-            _dispatcher.Publish(new RegisterOrder(message.Order,
+            _dispatcher.Publish(new QueueOrderForPayment(message.Order,
                                              message.CorrelationId,
                                              message.MessageId));
             return true;

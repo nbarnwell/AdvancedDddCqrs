@@ -19,5 +19,10 @@
             }
             return true;
         }
+
+        public override string ToString()
+        {
+            return string.Format("NarrowingHandler({0})", Handler);
+        }
     }
 }
