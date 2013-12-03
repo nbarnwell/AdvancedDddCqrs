@@ -9,7 +9,7 @@ namespace ClassLibrary2
         private readonly IEnumerable<BlockingCollectionAsyncHandler> _handlers;
         private readonly int _maxQueueLength;
 
-        public BackPressureDispatcher(IEnumerable<BlockingCollectionAsyncHandler> handlers, int maxQueueLength)
+        public BackPressureDispatcher(IEnumerable<IOrderHandler> handlers, int maxQueueLength)
         {
             if (handlers == null) throw new ArgumentNullException("handlers");
 

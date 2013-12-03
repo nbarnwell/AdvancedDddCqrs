@@ -21,11 +21,11 @@ namespace ConsoleRunner
             var assMan       = new BlockingCollectionAsyncHandler(new AssMan(cashier));
             var cooks        = new[]
             {
-                new BlockingCollectionAsyncHandler(new Cook(assMan, 200)),
-                new BlockingCollectionAsyncHandler(new Cook(assMan, 500)),
-                new BlockingCollectionAsyncHandler(new Cook(assMan, 900))
+                new TTLFilteringHandler( new BlockingCollectionAsyncHandler(new Cook(assMan, 200))),
+                new TTLFilteringHandler( new BlockingCollectionAsyncHandler(new Cook(assMan, 500))),
+                new TTLFilteringHandler( new BlockingCollectionAsyncHandler(new Cook(assMan, 900)))
             };
-            var dispatcher = new RetryDispatcher(new BackPressureDispatcher(cooks, 5));
+            var dispatcher = new TTLSettingHandler(new RetryDispatcher(new BackPressureDispatcher(cooks, 5), 10);
 
             var waiter = new Waiter(dispatcher);
 

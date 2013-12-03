@@ -66,6 +66,8 @@
     <Compile Include="TaskAsyncHandler.cs" />
     <Compile Include="TestableOrderHandler.cs" />
     <Compile Include="Tests.cs" />
+    <Compile Include="TTLFilteringHandler.cs" />
+    <Compile Include="TTLSettingHandler.cs" />
     <Compile Include="Waiter.cs" />
     <Compile Include="WaiterOrderView.cs" />
   </ItemGroup>
