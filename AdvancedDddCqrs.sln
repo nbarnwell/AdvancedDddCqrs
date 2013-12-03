@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedDddCqrs", "ClassLibrary2\AdvancedDddCqrs.csproj", "{BE6CC44E-7720-4248-A566-5445D7C21B09}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedDddCqrs", "AdvancedDddCqrs\AdvancedDddCqrs.csproj", "{BE6CC44E-7720-4248-A566-5445D7C21B09}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleRunner", "ConsoleRunner\ConsoleRunner.csproj", "{AD442472-4346-4589-AD80-7E84D546F57D}"
 EndProject
