@@ -38,8 +38,8 @@ namespace ClassLibrary2
                     throw new Exception(string.Format("Cook doesn't know how to make {0}", item.Name));
                 }
             }
-
-            _dispatcher.Publish(typeof(Cooked).FullName, message);
+            Console.Write(".");
+            _dispatcher.Publish(new Cooked(order, message.CorrelationId, message.MessageId));
 
             return true;
         }

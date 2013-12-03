@@ -8,12 +8,19 @@ namespace ClassLibrary2
     {
         private readonly IDictionary<string, Multiplexer<IMessage>> _subscriptions = new Dictionary<string, Multiplexer<IMessage>>();
 
-        public void Publish<T>(string topic, T message) where T : class, IMessage
+        public void Publish<T>(T message) where T : class, IMessage
         {
-            Multiplexer<IMessage> handlers;
-            if (_subscriptions.TryGetValue(topic, out handlers))
+            var typeName = message.GetType().FullName;
+
+            var topics = new List<string> { typeName, message.CorrelationId.ToString() };
+
+            foreach (var topic in topics)
             {
-                handlers.Handle(message);
+                Multiplexer<IMessage> handlers;
+                if (_subscriptions.TryGetValue(topic, out handlers))
+                {
+                    handlers.Handle(message);
+                }
             }
         }
 

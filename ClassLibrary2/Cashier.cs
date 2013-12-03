@@ -7,7 +7,7 @@ namespace ClassLibrary2
     public class Cashier : IHandler<Priced>
     {
         private readonly ITopicDispatcher _dispatcher;
-        private readonly Dictionary<Guid, Order> _ordersToBePaid = new Dictionary<Guid, Order>();
+        private readonly Dictionary<Guid, OrderMessage> _ordersToBePaid = new Dictionary<Guid, OrderMessage>();
         
         public Cashier(ITopicDispatcher dispatcher)
         {
@@ -18,12 +18,13 @@ namespace ClassLibrary2
 
         public bool TryPay(Guid orderId)
         {
-            Order orderToPay;
-            if (_ordersToBePaid.TryGetValue(orderId, out orderToPay))
+            OrderMessage orderMessage;
+            if (_ordersToBePaid.TryGetValue(orderId, out orderMessage))
             {
+                Order orderToPay = orderMessage.Order;
                 orderToPay.IsPaid = true;
                 _ordersToBePaid.Remove(orderId);
-                _dispatcher.Publish(typeof(Paid).FullName, new Paid(orderToPay));
+                _dispatcher.Publish(new Paid(orderToPay, orderMessage.CorrelationId, orderMessage.MessageId));
                 return true;
             }
 
@@ -32,7 +33,7 @@ namespace ClassLibrary2
 
         public bool Handle(Priced message)
         {
-            _ordersToBePaid.Add(message.Order.Id, message.Order);
+            _ordersToBePaid.Add(message.Order.Id, message);
             return true;
         }
     }

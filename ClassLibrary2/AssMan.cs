@@ -35,7 +35,7 @@ namespace ClassLibrary2
                 }
             }
 
-            _dispatcher.Publish(typeof(Priced).FullName, new Priced(order));
+            _dispatcher.Publish(new Priced(order, message.CorrelationId, message.MessageId));
 
             return true;
         }

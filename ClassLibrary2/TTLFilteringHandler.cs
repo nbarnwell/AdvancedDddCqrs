@@ -26,7 +26,7 @@ namespace ClassLibrary2
                 }
 
             }
-            Console.WriteLine("****************** Dropped message: {0}", JsonConvert.SerializeObject(message, Formatting.Indented));
+            //Console.WriteLine("****************** Dropped message: {0}", JsonConvert.SerializeObject(message, Formatting.Indented));
             return true;
         }
     }

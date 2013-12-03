@@ -6,13 +6,14 @@ namespace ClassLibrary2.Messages
     {
         private DateTime? _expiry;
 
-        public OrderTaken(Order clone) : base(clone)
+        public OrderTaken(Order order, Guid correlationId, Guid? causationId)
+            : base(order, correlationId, causationId)
         {
         }
 
         public bool HasExpired()
         {
-            Console.WriteLine("Now: {0}, _expiry: {1}", DateTime.UtcNow, _expiry);
+            //Console.WriteLine("Now: {0}, _expiry: {1}", DateTime.UtcNow, _expiry);
             return DateTime.UtcNow > _expiry;
         }
 
@@ -24,15 +25,15 @@ namespace ClassLibrary2.Messages
             }
             else
             {
-                Console.WriteLine("Resetting expiry!");
+                //Console.WriteLine("Resetting expiry!");
             }
         }
 
-        public OrderTaken Clone()
-        {
-            var clone = new OrderTaken(Order.Clone());
-            clone._expiry = _expiry;
-            return clone;
-        }
+        //public OrderTaken Clone()
+        //{
+        //    var clone = new OrderTaken(Order.Clone());
+        //    clone._expiry = _expiry;
+        //    return clone;
+        //}
     }
 }

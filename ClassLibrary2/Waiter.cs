@@ -23,7 +23,7 @@ namespace ClassLibrary2
                 order.AddItem(item);
             }
 
-            _dispatcher.Publish(typeof(OrderTaken).FullName, new OrderTaken(order));
+            _dispatcher.Publish(new OrderTaken(order, order.Id, null));
         }
     }
 }

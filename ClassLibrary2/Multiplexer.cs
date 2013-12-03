@@ -28,6 +28,7 @@ namespace ClassLibrary2
         {
             foreach (var handler in _handlers)
             {
+                //var newMessage = (T)message.clone();
                 handler.Handle(message);
             }
 
