@@ -26,6 +26,8 @@ namespace AdvancedDddCqrs
 
             var order = message.Order;
 
+            Console.WriteLine("COOKING ALL THE FOOD!");
+
             foreach (var item in order.Items)
             {
                 IList<string> ingredients;
@@ -38,7 +40,7 @@ namespace AdvancedDddCqrs
                     throw new Exception(string.Format("Cook doesn't know how to make {0}", item.Name));
                 }
             }
-            Console.Write(".");
+
             _dispatcher.Publish(new Cooked(order, message.CorrelationId, message.MessageId));
 
             return true;

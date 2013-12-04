@@ -51,7 +51,9 @@ namespace AdvancedDddCqrs
             Multiplexer<IMessage> multiplexer;
             if (_subscriptions.TryGetValue(topic, out multiplexer))
             {
-                multiplexer.RemoveHandler<T>(handler);
+                var clone = multiplexer.Clone();
+                clone.RemoveHandler<T>(handler);
+                _subscriptions[topic] = clone;
             }
         }
 

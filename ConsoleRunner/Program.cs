@@ -43,8 +43,7 @@ namespace ConsoleRunner
             topicDispatcher.Subscribe(cookDispatcher);
             topicDispatcher.Subscribe(assMan);
 
-            //topicDispatcher.Subscribe(new SelfUnsubscribingCorrelationPicker(topicDispatcher));
-            topicDispatcher.Subscribe(new OrderSampler(topicDispatcher));
+            topicDispatcher.Subscribe(new SelfUnsubscribingOrderSampler(topicDispatcher));
 
             topicDispatcher.Subscribe(tbm.Wrap(new OrderFulfillmentCoordinator(topicDispatcher)));
 

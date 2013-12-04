@@ -68,7 +68,7 @@
     <Compile Include="OrderFulfillment.cs" />
     <Compile Include="Messages\PriceFood.cs" />
     <Compile Include="Printer.cs" />
-    <Compile Include="SelfUnsubscribingCorrelationPicker.cs" />
+    <Compile Include="SelfUnsubscribingOrderSampler.cs" />
     <Compile Include="ThreadBoundary.cs" />
     <Compile Include="Cashier.cs" />
     <Compile Include="Cook.cs" />
