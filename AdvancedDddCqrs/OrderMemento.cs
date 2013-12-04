@@ -41,6 +41,12 @@ namespace AdvancedDddCqrs
             set { _content.TableNumber = value; }
         }
 
+        public bool DodgeyCustomer
+        {
+            get { return _content.DodgeyCustomer; }
+            set { _content.DodgeyCustomer = value; }
+        }
+
         public OrderMemento()
         {
             _content = new ExpandoObject();

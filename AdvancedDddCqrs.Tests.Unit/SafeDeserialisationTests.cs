@@ -12,7 +12,7 @@ namespace AdvancedDddCqrs.Tests.Unit
         public void Serialisation_ShouldWriteAllValues()
         {
             var serialiser = new MementoSerialiser();
-            var order = new Order(12, _orderId, "Neil");
+            var order = new Order(12, _orderId, "Neil", false);
             order.AddItem(
                 new OrderItem
                 {

@@ -32,7 +32,7 @@ namespace AdvancedDddCqrs
             }
             var origColour = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Red;
-             Console.Write("-");
+            Console.Write("-");
             Console.ForegroundColor = origColour;
             return true;
         }

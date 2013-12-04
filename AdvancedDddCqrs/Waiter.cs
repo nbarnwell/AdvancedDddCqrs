@@ -16,9 +16,9 @@ namespace AdvancedDddCqrs
             _dispatcher = dispatcher;
         }
 
-        public void TakeOrder(int tableNumber, IEnumerable<OrderItem> orderItems, Guid id)
+        public void TakeOrder(int tableNumber, IEnumerable<OrderItem> orderItems, Guid id, bool dodgeyCustomer)
         {
-            var order = new Order(tableNumber, id, _name);
+            var order = new Order(tableNumber, id, _name, dodgeyCustomer);
 
             foreach (var item in orderItems)
             {

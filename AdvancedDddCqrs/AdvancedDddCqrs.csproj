@@ -53,7 +53,9 @@
     <Compile Include="Messages\IHaveTTL.cs" />
     <Compile Include="Messages\QueueOrderForPayment.cs" />
     <Compile Include="Messages\Report.cs" />
+    <Compile Include="OrderFulfillmentForDodegyCustomer.cs" />
     <Compile Include="OrderMemento.cs" />
+    <Compile Include="ReportingSystem.cs" />
     <Compile Include="SmartDispatcher.cs" />
     <Compile Include="OrderSampler.cs" />
     <Compile Include="Messages\Completed.cs" />

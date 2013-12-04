@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using AdvancedDddCqrs.Messages;
 
@@ -7,7 +8,7 @@ namespace AdvancedDddCqrs
     public class Cashier : IHandler<QueueOrderForPayment>
     {
         private readonly ITopicDispatcher _dispatcher;
-        private readonly Dictionary<Guid, OrderMessage> _ordersToBePaid = new Dictionary<Guid, OrderMessage>();
+        private readonly ConcurrentDictionary<Guid, OrderMessage> _ordersToBePaid = new ConcurrentDictionary<Guid, OrderMessage>();
         
         public Cashier(ITopicDispatcher dispatcher)
         {
@@ -22,17 +23,26 @@ namespace AdvancedDddCqrs
             {
                 var orderToPay = orderMessage.Order;
                 orderToPay.SettleBill();
-                _ordersToBePaid.Remove(orderId);
+                OrderMessage removedOrder;
+                _ordersToBePaid.TryRemove(orderId, out removedOrder);
                 _dispatcher.Publish(new Paid(orderToPay, orderMessage.CorrelationId, orderMessage.MessageId));
+
+                var origColour = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write("$");
+                Console.ForegroundColor = origColour;
+
                 return true;
             }
+
+           
 
             return false;
         }
 
         public bool Handle(QueueOrderForPayment message)
         {
-            _ordersToBePaid.Add(message.Order.Id, message);
+            _ordersToBePaid.TryAdd(message.Order.Id, message);
             return true;
         }
     }

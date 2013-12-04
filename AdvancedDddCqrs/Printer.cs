@@ -11,5 +11,7 @@ namespace AdvancedDddCqrs
             Console.WriteLine("{0}: {1}", message,JsonConvert.SerializeObject(message, Formatting.Indented));
             return true;
         }
+
+
     }
 }

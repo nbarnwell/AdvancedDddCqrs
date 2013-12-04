@@ -2,8 +2,10 @@ using System;
 
 namespace AdvancedDddCqrs.Messages
 {
-    public class OrderMessage : IMessage
+    public class OrderMessage : IMessage, IHaveTTL
     {
+        private DateTime? _expiry;
+
         public Order Order { get; private set; }
 
         protected OrderMessage(Order order, Guid correlationId, Guid? causationId=null )
@@ -21,5 +23,18 @@ namespace AdvancedDddCqrs.Messages
         public Guid MessageId { get; private set; }
         public Guid CorrelationId { get; private set; }
         public Guid? CausationId { get; private set; }
+
+        public bool HasExpired()
+        {
+            return DateTime.UtcNow > _expiry;
+        }
+
+        public void SetExpiry(TimeSpan duration)
+        {
+            if (_expiry == null)
+            {
+                _expiry = DateTime.UtcNow.Add(duration);
+            }
+        }
     }
 }

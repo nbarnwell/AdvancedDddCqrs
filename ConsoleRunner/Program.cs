@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AdvancedDddCqrs;
@@ -25,19 +27,19 @@ namespace ConsoleRunner
             var assMan       = tbm.Wrap(new AssMan(topicDispatcher));
             var cooks        = new[]
             {
-                tbm.Wrap(new Cook(topicDispatcher, 200)),
-                tbm.Wrap(new Cook(topicDispatcher, 500)),
-                tbm.Wrap(new Cook(topicDispatcher, 900))
+                tbm.Wrap(new Cook(topicDispatcher, 20)),
+                tbm.Wrap(new Cook(topicDispatcher, 50)),
+                tbm.Wrap(new Cook(topicDispatcher, 90))
             };
             var cookDispatcher =
                 TTLSettingHandler.Wrap(
                     tbm.Wrap(
                         RetryDispatcher.Wrap(
                             TTLFilteringHandler.Wrap(
-                                SmartDispatcher.Wrap(cooks, maxQueueLength: 5))
+                                SmartDispatcher.Wrap(cooks, maxQueueLength: 15))
                             )
                         ),
-                    1);
+                    10);
 
             var waiter = new Waiter("Neil", topicDispatcher);
 
@@ -68,6 +70,8 @@ namespace ConsoleRunner
             Task.Factory.StartNew(
                 () =>
                 {
+                    bool isDodegy = false;
+                       
                     foreach (var orderId in orderIds)
                     {
                         waiter.TakeOrder(
@@ -80,13 +84,14 @@ namespace ConsoleRunner
                                     Quantity = 1
                                 }
                             },
-                            orderId
+                            orderId,
+                            isDodegy
                             );
-
+                        isDodegy = !isDodegy;
                         ordersToBePaid.Add(orderId);
                     }
 
-                    ordersToBePaid.CompleteAdding();
+                    //ordersToBePaid.CompleteAdding();
                 });
 
             var waitHandle = new ManualResetEvent(false);
@@ -95,9 +100,9 @@ namespace ConsoleRunner
                 {
                     foreach (var orderId in ordersToBePaid.GetConsumingEnumerable())
                     {
-                        while (cashier.TryPay(orderId) == false)
+                        if (false == cashier.TryPay(orderId))
                         {
-                            Thread.Sleep(1);
+                            ordersToBePaid.Add(orderId);
                         }
                     }
 

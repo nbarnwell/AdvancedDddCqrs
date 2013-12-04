@@ -13,6 +13,7 @@ namespace AdvancedDddCqrs
         public Guid   Id          { get; private set; }
         public string ServerId    { get; private set; }
         public bool   IsPaid      { get; private set; }
+        public bool DodgeyCustomer { get; private set; }
         
         public IEnumerable<OrderItem> Items
         {
@@ -25,15 +26,17 @@ namespace AdvancedDddCqrs
             Id          = memento.Id;
             ServerId    = memento.ServerId;
             IsPaid      = memento.IsPaid;
+            DodgeyCustomer = memento.DodgeyCustomer;
             _items      = new List<OrderItem>(memento.Items);
         }
 
-        public Order(int tableNumber, Guid id, string serverId)
+        public Order(int tableNumber, Guid id, string serverId, bool dodgeyCustomer)
         {
             Id          = id;
             TableNumber = tableNumber;
             ServerId    = serverId;
             _items      = new List<OrderItem>();
+            DodgeyCustomer = dodgeyCustomer;
         }
 
         public OrderMemento GetMemento()
@@ -44,6 +47,7 @@ namespace AdvancedDddCqrs
                 IsPaid      = IsPaid,
                 ServerId    = ServerId,
                 TableNumber = TableNumber,
+                DodgeyCustomer = DodgeyCustomer,
                 Items       = Items.Select(x => new OrderItem
                 {
                     Cost            = x.Cost,
