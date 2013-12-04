@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace AdvancedDddCqrs
 {
-    public class ThreadBoundary<T> : IHandler<T>, IDisposable
+    public class ThreadBoundary<T> : IHandler<T>, IDisposable, IReportingThreadBoundary
     {
         private readonly IHandler<T> _handler;
         private BlockingCollection<T> _queue = new BlockingCollection<T>();
@@ -37,6 +37,16 @@ namespace AdvancedDddCqrs
             return string.Format("ThreadBoundary({0})", _handler);
         }
 
+        public string GetName()
+        {
+            return ToString();
+        }
+
+        public int GetQueueLength()
+        {
+            return QueueLength;
+        }
+
         public void Dispose()
         {
             if (_queue != null)
@@ -45,5 +55,11 @@ namespace AdvancedDddCqrs
                 _queue = null;
             }
         }
+    }
+
+    public interface IReportingThreadBoundary
+    {
+        string GetName();
+        int GetQueueLength();
     }
 }

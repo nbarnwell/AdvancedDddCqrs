@@ -30,7 +30,10 @@ namespace AdvancedDddCqrs
             {
                 return _handler.Handle(message);
             }
-
+            var origColour = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
+             Console.Write("-");
+            Console.ForegroundColor = origColour;
             return true;
         }
 

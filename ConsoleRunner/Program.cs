@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using AdvancedDddCqrs;
+using AdvancedDddCqrs.Messages;
 
 namespace ConsoleRunner
 {
@@ -17,15 +18,16 @@ namespace ConsoleRunner
         {
             var topicDispatcher = new TopicDispatcher();
             var tbm = new ThreadBoundaryMonitor();
-
+            
+            var reporting = tbm.Wrap(new ReportingSystem(topicDispatcher));
             var cashierInner = new Cashier(topicDispatcher);
             var cashier      = tbm.Wrap(cashierInner);
             var assMan       = tbm.Wrap(new AssMan(topicDispatcher));
             var cooks        = new[]
             {
-                tbm.Wrap(new Cook(topicDispatcher, 2000)),
-                tbm.Wrap(new Cook(topicDispatcher, 5000)),
-                tbm.Wrap(new Cook(topicDispatcher, 9000))
+                tbm.Wrap(new Cook(topicDispatcher, 200)),
+                tbm.Wrap(new Cook(topicDispatcher, 500)),
+                tbm.Wrap(new Cook(topicDispatcher, 900))
             };
             var cookDispatcher =
                 TTLSettingHandler.Wrap(
@@ -42,12 +44,14 @@ namespace ConsoleRunner
             topicDispatcher.Subscribe(cashier);
             topicDispatcher.Subscribe(cookDispatcher);
             topicDispatcher.Subscribe(assMan);
+            topicDispatcher.Subscribe(reporting);
 
             topicDispatcher.Subscribe(new SelfUnsubscribingOrderSampler(topicDispatcher));
 
-            topicDispatcher.Subscribe(tbm.Wrap(new OrderFulfillmentCoordinator(topicDispatcher)));
+            topicDispatcher.Subscribe(tbm.Wrap<OrderTaken>(new OrderFulfillmentCoordinator(topicDispatcher)));
+            tbm.Start();
 
-            RunTest(waiter, cashierInner, orderCount: 1);
+            RunTest(waiter, cashierInner, orderCount: 5000);
         }
 
 

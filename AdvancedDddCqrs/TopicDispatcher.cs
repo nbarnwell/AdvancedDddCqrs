@@ -77,5 +77,19 @@ namespace AdvancedDddCqrs
 
             return topics;
         }
+
+        //private static IEnumerable<string> GetDefaultTopics<T>(T message) where T : class, IMessage
+        //{
+        //    var types = new TypeInspector().GetTypeHierarchy(message.GetType());
+        //    var topics = new List<string>();
+
+        //    foreach (var type in types)
+        //    {
+        //        TopicFromTypeName(type);
+        //    }
+
+        //    topics.Add(TopicFromCorrelationId(message));
+        //    return topics;
+        //}
     }
 }

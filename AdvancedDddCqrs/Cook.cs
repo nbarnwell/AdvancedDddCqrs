@@ -26,8 +26,6 @@ namespace AdvancedDddCqrs
 
             var order = message.Order;
 
-            Console.WriteLine("COOKING ALL THE FOOD!");
-
             foreach (var item in order.Items)
             {
                 IList<string> ingredients;
@@ -41,8 +39,9 @@ namespace AdvancedDddCqrs
                 }
             }
 
+            Console.Write("+");
             _dispatcher.Publish(new Cooked(order, message.CorrelationId, message.MessageId));
-
+           
             return true;
         }
     }

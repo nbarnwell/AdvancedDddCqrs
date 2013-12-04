@@ -1,11 +1,13 @@
-﻿using AdvancedDddCqrs.Messages;
+﻿using System;
+using AdvancedDddCqrs.Messages;
 
 namespace AdvancedDddCqrs
 {
     public class OrderFulfillment : IHandler<Cooked>,
                                     IHandler<Priced>, 
                                     IHandler<Paid>, 
-                                    IHandler<Completed>
+                                    IHandler<Completed>,
+                                    IHandler<IMessage>
     {
         private readonly ITopicDispatcher _dispatcher;
 
@@ -44,11 +46,38 @@ namespace AdvancedDddCqrs
 
         public bool Handle(Completed message)
         {
+
+            var origColour = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("!");
+            Console.ForegroundColor = origColour;
            //Unsubscribe
             _dispatcher.Unsubscribe<Cooked>(message.CorrelationId.ToString(), this);
             _dispatcher.Unsubscribe<Priced>(message.CorrelationId.ToString(), this);
             _dispatcher.Unsubscribe<Paid>(message.CorrelationId.ToString(), this);
             _dispatcher.Unsubscribe<Completed>(message.CorrelationId.ToString(), this);
+            return true;
+        }
+
+        public bool Handle(IMessage message)
+        {
+            return true;
+        }
+    }
+
+
+    public class ReportingSystem : IHandler<Report>
+    {
+        private readonly ITopicDispatcher _dispatcher;
+
+        public ReportingSystem(ITopicDispatcher dispatcher)
+        {
+            _dispatcher = dispatcher;
+        }
+
+        public bool Handle(Report message)
+        {
+            _dispatcher.Publish(new Completed(message.Order, message.CorrelationId, message.MessageId));
             return true;
         }
     }
