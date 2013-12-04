@@ -20,8 +20,8 @@ namespace AdvancedDddCqrs
             OrderMessage orderMessage;
             if (_ordersToBePaid.TryGetValue(orderId, out orderMessage))
             {
-                Order orderToPay = orderMessage.Order;
-                orderToPay.IsPaid = true;
+                var orderToPay = orderMessage.Order;
+                orderToPay.SettleBill();
                 _ordersToBePaid.Remove(orderId);
                 _dispatcher.Publish(new Paid(orderToPay, orderMessage.CorrelationId, orderMessage.MessageId));
                 return true;

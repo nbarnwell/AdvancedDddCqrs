@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedDddCqrs", "Advanced
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleRunner", "ConsoleRunner\ConsoleRunner.csproj", "{AD442472-4346-4589-AD80-7E84D546F57D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedDddCqrs.Tests.Unit", "AdvancedDddCqrs.Tests.Unit\AdvancedDddCqrs.Tests.Unit.csproj", "{637F4FF0-D9F8-4268-80B6-5B5E3448832B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{AD442472-4346-4589-AD80-7E84D546F57D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD442472-4346-4589-AD80-7E84D546F57D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD442472-4346-4589-AD80-7E84D546F57D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{637F4FF0-D9F8-4268-80B6-5B5E3448832B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{637F4FF0-D9F8-4268-80B6-5B5E3448832B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{637F4FF0-D9F8-4268-80B6-5B5E3448832B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{637F4FF0-D9F8-4268-80B6-5B5E3448832B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

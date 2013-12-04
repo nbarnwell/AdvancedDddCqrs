@@ -5,10 +5,10 @@ namespace AdvancedDddCqrs
 {
     public class OrderItem
     {
-        public string Name { get; set; }
-        public uint Quantity { get; set; }
-        public IList<string> IngredientsUsed { get; set; }
         public double Cost { get; set; }
+        public string Name { get; set; }
+        public IList<string> IngredientsUsed { get; set; }
+        public uint Quantity { get; set; }
 
         public OrderItem Clone()
         {

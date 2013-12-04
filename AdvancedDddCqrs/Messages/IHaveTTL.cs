@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace AdvancedDddCqrs
+namespace AdvancedDddCqrs.Messages
 {
     public interface IHaveTTL
     {

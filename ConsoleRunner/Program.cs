@@ -37,7 +37,7 @@ namespace ConsoleRunner
                         ),
                     1);
 
-            var waiter = new Waiter(topicDispatcher);
+            var waiter = new Waiter("Neil", topicDispatcher);
 
             topicDispatcher.Subscribe(cashier);
             topicDispatcher.Subscribe(cookDispatcher);

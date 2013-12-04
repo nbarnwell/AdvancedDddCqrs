@@ -6,17 +6,19 @@ namespace AdvancedDddCqrs
 {
     public class Waiter
     {
+        private readonly string _name;
         private readonly ITopicDispatcher _dispatcher;
 
-        public Waiter(ITopicDispatcher dispatcher)
+        public Waiter(string name, ITopicDispatcher dispatcher)
         {
             if (dispatcher == null) throw new ArgumentNullException("dispatcher");
+            _name = name;
             _dispatcher = dispatcher;
         }
 
         public void TakeOrder(int tableNumber, IEnumerable<OrderItem> orderItems, Guid id)
         {
-            var order = new Order(tableNumber, id);
+            var order = new Order(tableNumber, id, _name);
 
             foreach (var item in orderItems)
             {
