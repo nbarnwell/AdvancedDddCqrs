@@ -47,6 +47,7 @@ namespace ConsoleRunner
             topicDispatcher.Subscribe(cookDispatcher);
             topicDispatcher.Subscribe(assMan);
             topicDispatcher.Subscribe(reporting);
+            topicDispatcher.Subscribe(tbm.Wrap(new Logger()));
 
             topicDispatcher.Subscribe(new SelfUnsubscribingOrderSampler(topicDispatcher));
 
