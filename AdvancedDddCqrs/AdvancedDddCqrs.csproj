@@ -58,6 +58,7 @@
     <Compile Include="Messages\Report.cs" />
     <Compile Include="OrderFulfillmentForDodegyCustomer.cs" />
     <Compile Include="OrderMemento.cs" />
+    <Compile Include="RandomMessageFail.cs" />
     <Compile Include="ReportingSystem.cs" />
     <Compile Include="SmartDispatcher.cs" />
     <Compile Include="OrderSampler.cs" />

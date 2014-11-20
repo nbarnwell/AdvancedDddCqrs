@@ -7,7 +7,7 @@ using AdvancedDddCqrs.Messages;
 
 namespace AdvancedDddCqrs
 {
-    public class MessageDelay : IHandler<Echo>
+    public class MessageDelay : IHandler<IMessage>
     {
         private readonly ITopicDispatcher _dispatcher;
         private readonly List<EchoWrapper> _messagesToEcho = new List<EchoWrapper>();
@@ -27,7 +27,7 @@ namespace AdvancedDddCqrs
 
                     foreach (var message in messages)
                     {
-                        _dispatcher.Publish(message.Inner.Inner);
+                        _dispatcher.Publish((dynamic)message.Echo.Inner);
                     }
 
                     Thread.Sleep(1000);
@@ -35,7 +35,7 @@ namespace AdvancedDddCqrs
             });
         }
 
-        public bool Handle(Echo message)
+        public bool Handle(IMessage message)
         {
             var echoWrapper = new EchoWrapper(message);
             echoWrapper.SetExpiry(message.Delay);
@@ -45,35 +45,15 @@ namespace AdvancedDddCqrs
         }
     }
 
-    internal class EchoWrapper : IHaveTTL
-    {
-        private DateTime _expiry;
-
-        public Echo Inner { get; private set; }
-
-        public EchoWrapper(Echo message)
-        {
-            Inner = message;
-        }
-
-        public bool HasExpired()
-        {
-            return DateTime.UtcNow >= _expiry;
-        }
-
-        public void SetExpiry(TimeSpan duration)
-        {
-            _expiry = DateTime.UtcNow.Add(duration);
-        }
-    }
-
-    public class Echo : IMessage
+    public class Echo<T> : IMessage
     {
         public Guid MessageId { get; private set; }
         public Guid CorrelationId { get; private set; }
         public Guid? CausationId { get; private set; }
 
+        public int RetryCount { get; set; }
+        public int MaxRetries { get; set; }
         public TimeSpan Delay { get; private set; }
-        public IMessage Inner { get; private set; }
+        public T Inner { get; private set; }
     }
 }

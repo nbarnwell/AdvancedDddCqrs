@@ -21,7 +21,7 @@ namespace ConsoleRunner
             var topicDispatcher = new TopicDispatcher();
             var tbm = new ThreadBoundaryMonitor();
             
-            var reporting = tbm.Wrap(new ReportingSystem(topicDispatcher));
+            var reporting    = tbm.Wrap(new ReportingSystem(topicDispatcher));
             var cashierInner = new Cashier(topicDispatcher);
             var cashier      = tbm.Wrap(cashierInner);
             var assMan       = tbm.Wrap(new AssMan(topicDispatcher));
