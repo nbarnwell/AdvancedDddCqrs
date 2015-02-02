@@ -5,13 +5,13 @@ using AdvancedDddCqrs.Messages;
 
 namespace AdvancedDddCqrs
 {
-    public class AssMan : IHandler<PriceFood>
+    public class AssistantManager : IHandler<PriceFood>
     {
         private readonly ITopicDispatcher _dispatcher;
 
         private readonly IDictionary<string, double> _costs = new Dictionary<string, double>();
 
-        public AssMan(ITopicDispatcher dispatcher)
+        public AssistantManager(ITopicDispatcher dispatcher)
         {
             if (dispatcher == null) throw new ArgumentNullException("dispatcher");
             _dispatcher = dispatcher;

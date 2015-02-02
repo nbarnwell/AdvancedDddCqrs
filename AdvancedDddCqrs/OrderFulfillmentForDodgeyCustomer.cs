@@ -3,7 +3,7 @@ using AdvancedDddCqrs.Messages;
 
 namespace AdvancedDddCqrs
 {
-    public class OrderFulfillmentForDodegyCustomer : IProcessManager,
+    public class OrderFulfillmentForDodgeyCustomer : IProcessManager,
                                                      IHandler<Cooked>,
                                                      IHandler<Priced>,
                                                      IHandler<Paid>,
@@ -12,7 +12,7 @@ namespace AdvancedDddCqrs
     {
         private readonly ITopicDispatcher _dispatcher;
 
-        public OrderFulfillmentForDodegyCustomer(ITopicDispatcher dispatcher, OrderTaken initiatingMessage)
+        public OrderFulfillmentForDodgeyCustomer(ITopicDispatcher dispatcher, OrderTaken initiatingMessage)
         {
             _dispatcher = dispatcher;
 

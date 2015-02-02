@@ -15,7 +15,6 @@ namespace AdvancedDddCqrs
     public class TTLFilteringHandler<T> : IHandler<T>
     {
         private readonly IHandler<T> _handler;
-        private readonly int _durationSeconds;
 
         public TTLFilteringHandler(IHandler<T> handler)
         {
@@ -25,8 +24,8 @@ namespace AdvancedDddCqrs
 
         public bool Handle(T message)
         {
-            var hasTTL = message as IHaveTTL;
-            if (hasTTL == null || hasTTL.HasExpired() == false)
+            var hasTtl = message as IHaveTTL;
+            if (hasTtl == null || hasTtl.HasExpired() == false)
             {
                 return _handler.Handle(message);
             }

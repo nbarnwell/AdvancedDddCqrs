@@ -19,40 +19,38 @@ namespace ConsoleRunner
         private static void BackPressureTest()
         {
             var topicDispatcher = new TopicDispatcher();
-            var tbm = new ThreadBoundaryMonitor();
+            var threadBoundaryMonitor = new ThreadBoundaryMonitor();
             
-            var reporting    = tbm.Wrap(new ReportingSystem(topicDispatcher));
+            var reporting    = threadBoundaryMonitor.Wrap(new ReportingSystem(topicDispatcher));
             var cashierInner = new Cashier(topicDispatcher);
-            var cashier      = tbm.Wrap(cashierInner);
-            var assMan       = tbm.Wrap(new AssMan(topicDispatcher));
+            var cashier      = threadBoundaryMonitor.Wrap(cashierInner);
+            var assManager   = threadBoundaryMonitor.Wrap(new AssistantManager(topicDispatcher));
             var cooks        = new[]
             {
-                tbm.Wrap(new Cook(topicDispatcher, 20)),
-                tbm.Wrap(new Cook(topicDispatcher, 50)),
-                tbm.Wrap(new Cook(topicDispatcher, 90))
+                threadBoundaryMonitor.Wrap(new Cook(topicDispatcher, 20)),
+                threadBoundaryMonitor.Wrap(new Cook(topicDispatcher, 50)),
+                threadBoundaryMonitor.Wrap(new Cook(topicDispatcher, 90))
             };
             var cookDispatcher =
                 TTLSettingHandler.Wrap(
-                    tbm.Wrap(
+                    threadBoundaryMonitor.Wrap(
                         RetryDispatcher.Wrap(
                             TTLFilteringHandler.Wrap(
-                                SmartDispatcher.Wrap(cooks, maxQueueLength: 15))
-                            )
-                        ),
+                                SmartDispatcher.Wrap(cooks, maxQueueLength: 15)))),
                     10);
 
             var waiter = new Waiter("Neil", topicDispatcher);
 
             topicDispatcher.Subscribe(cashier);
             topicDispatcher.Subscribe(cookDispatcher);
-            topicDispatcher.Subscribe(assMan);
+            topicDispatcher.Subscribe(assManager);
             topicDispatcher.Subscribe(reporting);
-            topicDispatcher.Subscribe(tbm.Wrap(new Logger()));
+            topicDispatcher.Subscribe(threadBoundaryMonitor.Wrap(new Logger()));
 
             topicDispatcher.Subscribe(new SelfUnsubscribingOrderSampler(topicDispatcher));
 
-            topicDispatcher.Subscribe(tbm.Wrap<OrderTaken>(new OrderFulfillmentCoordinator(topicDispatcher)));
-            tbm.Start();
+            topicDispatcher.Subscribe(threadBoundaryMonitor.Wrap<OrderTaken>(new OrderFulfillmentCoordinator(topicDispatcher)));
+            threadBoundaryMonitor.Start();
 
             RunTest(waiter, cashierInner, orderCount: 5000);
         }

@@ -5,20 +5,25 @@ namespace AdvancedDddCqrs
 {
     public class Logger : IHandler<LogMessage>
     {
+        private readonly object _syncLock = new object();
+
         public bool Handle(LogMessage message)
         {
-            var prevColor = Console.ForegroundColor;
-
-            try
+            lock (_syncLock)
             {
-                Console.ForegroundColor = message.Color;
-            }
-            finally
-            {
-                Console.ForegroundColor = prevColor;
-            }
+                var prevColor = Console.ForegroundColor;
 
-            return true;
+                try
+                {
+                    Console.ForegroundColor = message.Color;
+                }
+                finally
+                {
+                    Console.ForegroundColor = prevColor;
+                }
+
+                return true;
+            }
         }
     }
 }

@@ -45,6 +45,26 @@ namespace AdvancedDddCqrs
         }
     }
 
+    internal class EchoWrapper
+    {
+        public EchoWrapper(IMessage message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasExpired()
+        {
+            throw new NotImplementedException();
+        }
+
+        public object Echo { get; private set; }
+
+        public void SetExpiry(TimeSpan delay)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public class Echo<T> : IMessage
     {
         public Guid MessageId { get; private set; }

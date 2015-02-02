@@ -11,8 +11,8 @@ namespace AdvancedDddCqrs
 
         public ThreadBoundary(IHandler<T> handler)
         {
-            _handler = handler;
             if (handler == null) throw new ArgumentNullException("handler");
+            _handler = handler;
 
             Task.Factory.StartNew(() =>
             {

@@ -2,6 +2,6 @@
 {
     public interface ISupportMemoisation<T>
     {
-        OrderMemento GetMemento();
+        T GetMemento();
     }
 }

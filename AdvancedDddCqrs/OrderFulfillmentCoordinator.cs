@@ -38,7 +38,7 @@ namespace AdvancedDddCqrs
             {
                 if (message.Order.DodgeyCustomer)
                 {
-                    orderFulfillment = new OrderFulfillmentForDodegyCustomer(_dispatcher, message);       
+                    orderFulfillment = new OrderFulfillmentForDodgeyCustomer(_dispatcher, message);       
                 }
                 else
                 {
